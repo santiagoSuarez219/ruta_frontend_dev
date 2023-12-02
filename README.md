@@ -13,6 +13,8 @@
       - [Eventos en React](#eventos-en-react)
     - [Estado](#estado)
     - [Practica: Estados](#practica-estados)
+    - [Libreria de iconos](#libreria-de-iconos)
+      - [Iconos con colores dinamicos](#iconos-con-colores-dinamicos)
   - [TailwindCSS](#tailwindcss)
   - [Instalacion de React con Vite y TailwindCSS](#instalacion-de-react-con-vite-y-tailwindcss)
     - [Que es Vite](#que-es-vite)
@@ -535,6 +537,74 @@ function ToDoItem(props) {
 }
 export { ToDoItem };
 ```
+
+### Libreria de iconos
+Existen diferentes librerias de iconos que podemos utilizar en nuestros proyectos de React,una de las mas populares es React Icons, que nos permite utilizar iconos de diferentes librerias como Font Awesome, Material Design, Ionicons, etc.:
+
+1. React Icos: [https://react-icons.github.io/react-icons/](https://react-icons.github.io/react-icons/)
+
+Aveces, no se puede utilizar iconos en librerias por que desde el area de diseño nos entregan iconos personalizados. En estos casos, podemos 'crear nuestra propia libreria de iconos' utilizando componentes de React.
+
+Primero debes incluir los svg en la carpeta src
+
+```jsx
+// src/TodoIcon.js
+import { ReactComponent as CheckSVG } from './check.svg';
+import { ReactComponent as DeleteSVG } from './delete.svg';
+import './TodoIcon.css';
+
+const iconTypes = {
+  "check": <CheckSVG />,
+  "delete": <DeleteSVG />,
+};
+
+function TodoIcon({ type, color, onClick }) {
+  return (
+    <span
+      className={`Icon-container Icon-container-${type}`}
+      onClick={onClick}
+    >
+      {iconTypes[type]}
+    </span>
+  )
+}
+
+export { TodoIcon };
+```
+
+```jsx
+import React from 'react';
+import { TodoIcon } from './TodoIcon';
+
+function CompleteIcon({ completed, onComplete }) {
+  return (
+    <TodoIcon
+      type="check"
+    />
+  );
+}
+
+export { CompleteIcon };
+```
+
+```jsx
+import React from 'react';
+import { TodoIcon } from './TodoIcon';
+
+function DeleteIcon({ onDelete }) {
+  return (
+    <TodoIcon
+      type="delete"
+    />
+  );
+}
+
+export { DeleteIcon };
+```
+
+#### Iconos con colores dinamicos
+
+
 
 ## TailwindCSS
 
