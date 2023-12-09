@@ -545,7 +545,12 @@ Existen diferentes librerias de iconos que podemos utilizar en nuestros proyecto
 
 Aveces, no se puede utilizar iconos en librerias por que desde el area de diseño nos entregan iconos personalizados. En estos casos, podemos 'crear nuestra propia libreria de iconos' utilizando componentes de React.
 
-Primero debes incluir los svg en la carpeta src
+Primero debes incluir los svg en la carpeta src.
+
+*Nota: si quieres iconos dinamicos, por ejemplo, que cambien de color, debes quitar en cada archivo svg
+debes eliminar la propiedad fill y posteriormente, incluirla con ReactJS como lo vamos hacer*
+
+1. Crear TodoIcon.js. Este componente recibe como prop el tipo de icono que se va a renderizar y el color del icono.
 
 ```jsx
 // src/TodoIcon.js
@@ -558,12 +563,9 @@ const iconTypes = {
   "delete": <DeleteSVG />,
 };
 
-function TodoIcon({ type, color, onClick }) {
+function TodoIcon({ type, color}) {
   return (
-    <span
-      className={`Icon-container Icon-container-${type}`}
-      onClick={onClick}
-    >
+    <span className={`Icon-container Icon-container-${type}`}>
       {iconTypes[type]}
     </span>
   )
