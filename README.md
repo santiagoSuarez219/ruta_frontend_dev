@@ -563,10 +563,65 @@ const iconTypes = {
   "delete": <DeleteSVG />,
 };
 
-function TodoIcon({ type, color}) {
+function TodoIcon({ type }) {
   return (
     <span className={`Icon-container Icon-container-${type}`}>
       {iconTypes[type]}
+    </span>
+  )
+}
+
+export { TodoIcon };
+```
+
+```jsx
+import React from 'react';
+import { TodoIcon } from './TodoIcon';
+
+function CompleteIcon() {
+  return (
+    <TodoIcon
+      type="check"
+    />
+  );
+}
+
+export { CompleteIcon };
+```
+
+```jsx
+import React from 'react';
+import { TodoIcon } from './TodoIcon';
+
+function DeleteIcon() {
+  return (
+    <TodoIcon
+      type="delete"
+    />
+  );
+}
+
+export { DeleteIcon };
+```
+
+#### Iconos con colores dinamicos
+1. Crear la propiedad color en ToDoIcon.js y incluir la clase Icon-svg a cada svg, ademas de modificarlos para recibir el parametro color y finalmnente incluir la propiedad fill.
+
+```jsx
+// src/TodoIcon.js
+import { ReactComponent as CheckSVG } from './check.svg';
+import { ReactComponent as DeleteSVG } from './delete.svg';
+import './TodoIcon.css';
+
+const iconTypes = {
+  "check": (color) => <CheckSVG className="Icon-svg" fill={color}/>,
+  "delete": (color) => <DeleteSVG className="Icon-svg" fill={color}/>,
+};
+
+function TodoIcon({ type, color, onClick}) {
+  return (
+    <span className={`Icon-container Icon-container-${type}`} onClick={onClick}>
+      {iconTypes[type](color)}
     </span>
   )
 }
@@ -582,6 +637,8 @@ function CompleteIcon({ completed, onComplete }) {
   return (
     <TodoIcon
       type="check"
+      color={completed ? 'green' : 'gray'}
+      onClick={onComplete}
     />
   );
 }
@@ -597,6 +654,8 @@ function DeleteIcon({ onDelete }) {
   return (
     <TodoIcon
       type="delete"
+      color="gray"
+      onClick={onDelete}
     />
   );
 }
@@ -604,9 +663,199 @@ function DeleteIcon({ onDelete }) {
 export { DeleteIcon };
 ```
 
-#### Iconos con colores dinamicos
+Estos son los estilos del componente TodoIcon
 
+```css
+.Icon-container {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+  width: 48px;
+  font-size: 24px;
+  font-weight: bold;
+  /* background-color: #CCC; */
+}
 
+.Icon-container-check {
+  position: absolute;
+  left: 12px;
+}
+.Icon-container-check--active {
+  color: #4caf50;
+}
+
+.Icon-container-delete {
+  position: absolute;
+  top: -24px;
+  right: 0;
+}
+
+.Icon-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.Icon-container-check:hover .Icon-svg {
+  fill: green;
+}
+.Icon-container-delete:hover .Icon-svg {
+  fill: red;
+}
+```
+
+Este es el codigo del ToDoItem
+
+```jsx
+import { CompleteIcon } from './CompleteIcon'
+import { DeleteIcon } from './DeleteIcon'
+import './TodoItem.css';
+
+function TodoItem(props) {
+  return (
+    <li className="TodoItem">
+      <CompleteIcon
+        completed={props.completed}
+        onComplete={props.onComplete}
+      />
+
+      <p className={`TodoItem-p ${props.completed && "TodoItem-p--complete"}`}>
+        {props.text}
+      </p>
+
+      <DeleteIcon
+        onDelete={props.onDelete}
+      />
+    </li>
+  );
+}
+
+export { TodoItem };
+
+## LocalStorage
+Es una API que nos permite almacenar datos en el navegador de forma persistente. Los datos almacenados en el localStorage no se eliminan al cerrar el navegador, ni al apagar el computador, ni al reiniciar el sistema operativo. Los datos almacenados en el localStorage permanecen ahí hasta que se borren manualmente, o hasta que se borren utilizando código.
+
+Para acceder al localStorage, lo podemos hacer desde la consola del navegador, utilizando el objeto localStorage. Por ejemplo, para guardar un dato en el localStorage, podemos utilizar el método setItem:
+
+```jsx
+localStorage.setItem('nombre', 'Juan');
+```
+
+Para obtener un dato del localStorage, podemos utilizar el método getItem:
+
+```jsx
+localStorage.getItem('nombre');
+```
+
+Para eliminar un dato del localStorage, podemos utilizar el método removeItem:
+
+```jsx
+localStorage.removeItem('nombre');
+```
+
+En nuestro proyecto, vamos a utilizar el localStorage para guardar los ToDos, de forma que cuando el usuario recargue la página, los ToDos se sigan mostrando.
+
+1. En la consola del navegador vas a crear el array de objetos que contiene los ToDos, y lo vas a guardar en el localStorage utilizando el método setItem:
+
+```jsx
+const defaultTodos = [
+  { text: 'Cortar cebolla', completed: true },
+  { text: 'Tomar el curso de intro a React', completed: false },
+  { text: 'Llorar con la llorona', completed: false },
+  { text: 'LALALA', completed: false },
+];
+
+localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos));
+```
+
+*NOTA: Todo lo que se guarda en localStorage debe ser un string*
+
+2. En el componente App, vamos a crear un estado para guardar los ToDos, y lo vamos a inicializar con los ToDos que están guardados en el localStorage:
+
+```jsx
+...
+
+// const defaultTodos = [
+//   { text: 'Cortar cebolla', completed: true },
+//   { text: 'Tomar el Curso de Intro a React.js', completed: false },
+//   { text: 'Llorar con la Llorona', completed: false },
+//   { text: 'LALALALALA', completed: false },
+//   { text: 'Usar estados derivados', completed: true },
+// ];
+
+// localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos));
+// localStorage.removeItem('TODOS_V1');
+
+function App() {
+  const localStorageTodos = localStorage.getItem('TODOS_V1');
+
+  let parsedTodos;
+  
+  // Si no hay ToDos en localStorage, entonces parsedTodos será un array vacío
+  if (!localStorageTodos) {
+    localStorage.setItem('TODOS_V1', JSON.stringify([]));
+    parsedTodos = [];
+  } else {
+    parsedTodos = JSON.parse(localStorageTodos);
+  }
+  
+  ...
+
+  const saveTodos = (newTodos) => {
+    localStorage.setItem('TODOS_V1', JSON.stringify(newTodos));
+    
+    setTodos(newTodos);
+  };
+
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos[todoIndex].completed = true;
+    saveTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos.splice(todoIndex, 1);
+    saveTodos(newTodos);
+  };
+  
+  return (
+    <>
+      <TodoCounter
+        completed={completedTodos}
+        total={totalTodos} 
+      />
+      <TodoSearch
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+      />
+
+      <TodoList>
+        {searchedTodos.map(todo => (
+          <TodoItem
+            key={todo.text}
+            text={todo.text}
+            completed={todo.completed}
+            onComplete={() => completeTodo(todo.text)}
+            onDelete={() => deleteTodo(todo.text)}
+          />
+        ))}
+      </TodoList>
+      
+      <CreateTodoButton />
+    </>
+  );
+}
+
+export default App;
+```
 
 ## TailwindCSS
 
