@@ -15,6 +15,16 @@
     - [Practica: Estados](#practica-estados)
     - [Libreria de iconos](#libreria-de-iconos)
       - [Iconos con colores dinamicos](#iconos-con-colores-dinamicos)
+  - [Custom Hooks](#custom-hooks)
+  - [Organizacion de archivos](#organizacion-de-archivos)
+  - [Efectos en React](#efectos-en-react)
+    - [Implementando estados de carga y error en la aplicacion ToDos](#implementando-estados-de-carga-y-error-en-la-aplicacion-todos)
+  - [React Context](#react-context)
+  - [React Portals](#react-portals)
+  - [Maquetando formularios en React](#maquetando-formularios-en-react)
+  - [Deploy de la aplicacion](#deploy-de-la-aplicacion)
+  - [Versiones de React](#versiones-de-react)
+  - [Creando proyectos de React](#creando-proyectos-de-react)
   - [TailwindCSS](#tailwindcss)
   - [Instalacion de React con Vite y TailwindCSS](#instalacion-de-react-con-vite-y-tailwindcss)
     - [Que es Vite](#que-es-vite)
@@ -857,6 +867,1103 @@ function App() {
 export default App;
 ```
 
+## Custom Hooks
+Los Custom Hooks son una característica de React que nos permite extraer lógica de componentes en funciones reutilizables. Los Custom Hooks son funciones de JavaScript que utilizan otras características de React, como los Hooks, y que nos permiten crear componentes personalizados.
+
+*Nota: Por convencion las funciones de custom Hooks comienzan con la palabra use*
+
+1. Crear el custom hook useLocalStorage
+
+```jsx
+function useLocalStorage(itemName, initialValue) {
+  const localStorageItem = localStorage.getItem(itemName);
+
+  let parsedItem;
+
+  if(!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue));
+    parsedItem = initialValue;
+  } else {
+    parsedItem = JSON.parse(localStorageItem);
+  }
+
+  const [item, setItem] = React.useState(parsedItem);
+
+  const saveItem = (newItem) => {
+    localStorage.setItem(itemName, JSON.stringify(newItem));
+    setItem(newItem);
+  };
+
+  return [item, saveItem];
+}
+
+function App() {
+  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  const [searchValue, setSearchValue] = React.useState('');
+  ...
+
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos[todoIndex].completed = true;
+    saveTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos.splice(todoIndex, 1);
+    saveTodos(newTodos);
+  };
+  
+  ...
+}
+
+export default App;
+```
+
+## Organizacion de archivos
+Una buena práctica para organizar los archivos de un proyecto de React es agrupar los archivos relacionados en carpetas. Por ejemplo, en nuestro proyecto, podemos crear una carpeta llamada components, y dentro de esta carpeta crear una carpeta para cada componente. De esta forma, todos los archivos relacionados con un componente estarán en la misma carpeta. Por ejemplo, el componente TodoItem podría tener la siguiente estructura de archivos:
+
+```bash
+TodoItem
+├── TodoItem.css
+├── TodoItem.jsx
+├── TodoItem.test.jsx
+└── index.js
+```
+
+El componente TodoIcon podría tener la siguiente estructura de archivos:
+
+```bash
+TodoIcon
+├── TodoIcon.css
+├── TodoIcon.jsx
+├── TodoIcon.test.jsx
+├── CompleteIcon.js
+├── DeleteIcon.js
+├── delete.svg
+├── check.svg
+└── index.js
+```
+
+Para el archivo app, la estructura de archivos podría ser la siguiente:
+
+```bash
+App
+├── index.js 
+└── useLocalStorage.js
+```
+
+*Nota: Para poder separar la funcion useLocalStorage debes incluir al final del arhivo la exportacion*
+
+```jsx
+...
+export { useLocalStorage };
+```
+
+*Nota: Para poder importar la funcion useLocalStorage debes incluir al final del arhivo la importacion*
+
+```jsx
+...
+import { useLocalStorage } from './useLocalStorage';
+```
+
+Tambien puedes mover la UI de tu componente a un archivo separado, por ejemplo.
+
+1. Crear un archivo AppUI.js
+
+```js
+// Todos los imports de React y componentes
+
+function AppUI(
+{ totalTodos,
+  completedTodos,
+  searchValue,
+  setSearchValue,
+  searchedTodos,
+  completeTodo,
+  deleteTodo}
+) {
+  return (
+    <>
+      <TodoCounter
+        completed={completedTodos}
+        total={totalTodos} 
+      />
+      <TodoSearch
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+      />
+
+      <TodoList>
+        {searchedTodos.map(todo => (
+          <TodoItem
+            key={todo.text}
+            text={todo.text}
+            completed={todo.completed}
+            onComplete={() => completeTodo(todo.text)}
+            onDelete={() => deleteTodo(todo.text)}
+          />
+        ))}
+      </TodoList>
+      
+      <CreateTodoButton />
+    </>
+  );
+}
+
+export { AppUI };
+```
+
+2. Importar el componente AppUI en App.js
+
+```jsx
+import { AppUI } from './AppUI';
+
+function App() {
+  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  const [searchValue, setSearchValue] = React.useState('');
+  ...
+
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos[todoIndex].completed = true;
+    saveTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos.splice(todoIndex, 1);
+    saveTodos(newTodos);
+  };
+  
+  ...
+  
+  return (
+    <AppUI
+      totalTodos={totalTodos}
+      completedTodos={completedTodos}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      searchedTodos={searchedTodos}
+      completeTodo={completeTodo}
+      deleteTodo={deleteTodo}
+    />
+  );
+}
+
+export default App;
+```
+
+## Efectos en React
+Los efectos son una característica de React que nos permite ejecutar código cuando se monta, desmonta o actualiza un componente.  Los efectos se utilizan para ejecutar código que necesita acceder al DOM, como por ejemplo, para obtener el tamaño de la ventana, o para ejecutar código asíncrono, como por ejemplo, para obtener datos de una API.
+
+**useEffect**: se ejecuta cuando se monta, desmonta o actualiza un componente.Recibe dos parámetros: una función que se ejecuta cuando se monta, desmonta o actualiza el componente, y una lista de dependencias que se utiliza para indicarle a React cuando debe volver a ejecutar la función. Si la lista de dependencias está vacía, la función se ejecuta solo cuando se monta y desmonta el componente.
+
+
+```jsx
+import React from 'react';
+
+function App() {
+  console.log('Log1');
+ 
+  React.useEffect(() => {
+    console.log('Log2');
+  });  // Si no se pasa un arreglo de dependencias, se ejecuta cuando se monta y desmonta el componente
+
+  React.useEffect(() => {
+    console.log('Log2');
+  }, []);  // Si se pasa un arreglo de dependencias vacío, se ejecuta solo cuando se monta el componente
+
+  React.useEffect(() => {
+    console.log('Log2');
+  }, [totalTodos]);  // Si se pasa un arreglo de dependencias con una variable, se ejecuta cuando se monta el componente y cuando cambia el valor de la variable
+
+  console.log('Log3');
+  
+  return (
+    <div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+useEffect se utiliza comunmente para obtener datos de una API, por ejemplo:
+
+```jsx
+import React from 'react';
+
+function TodoMessage() {
+  const [state, setState] = React.useState({});
+
+  React.useEffect(() => {
+    fetch('url')
+      .then((response) => response.json())
+      .then((data) => setState(data));
+  }, []);
+
+  return (
+    <p>
+      {state.message} || "Cargando..."
+    </p>
+  );
+}
+
+export default TodoMessage;
+```
+
+### Implementando estados de carga y error en la aplicacion ToDos
+
+en el archivo useLocalStorage.js
+
+```jsx
+import React from 'react';
+
+function useLocalStorage(itemName, initialValue) {
+  const [item, setItem] = React.useState(initialValue);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
+  
+  React.useEffect(() => {
+    setTimeout(() => {
+      try {
+        const localStorageItem = localStorage.getItem(itemName);
+    
+        let parsedItem;
+  
+        if (!localStorageItem) {
+          localStorage.setItem(itemName, JSON.stringify(initialValue));
+          parsedItem = initialValue;
+        } else {
+          parsedItem = JSON.parse(localStorageItem);
+          setItem(parsedItem);
+        }
+  
+        setLoading(false);
+      } catch(error) {
+        setLoading(false);
+        setError(true);
+      }
+    }, 2000);
+  , []);
+
+  const saveItem = (newItem) => {
+    localStorage.setItem(itemName, JSON.stringify(newItem));
+    setItem(newItem);
+  };
+
+  return {
+    item,
+    saveItem,
+    loading,
+    error,
+  };
+}
+
+export { useLocalStorage };
+```
+
+en el archivo App/index.js
+
+```jsx
+...
+
+
+function App() {
+  const {
+    item: todos,
+    saveItem: saveTodos,
+    loading,
+    error,
+  } = useLocalStorage('TODOS_V1', []);
+  const [searchValue, setSearchValue] = React.useState('');
+
+  ...
+
+  return (
+    <AppUI
+      loading={loading}
+      error={error}
+      completedTodos={completedTodos}
+      totalTodos={totalTodos}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      searchedTodos={searchedTodos}
+      completeTodo={completeTodo}
+      deleteTodo={deleteTodo}
+    />
+  );
+}
+
+export default App;
+```
+
+Crear componente EmpyTodos
+
+```jsx
+import React from 'react';
+
+function EmptyTodos() {
+  return (
+    <p>¡Crea tu primer TODO!</p>
+  );
+}
+
+export { EmptyTodos };
+```
+
+Crear componente TodosError
+
+```jsx
+import React from 'react';
+
+function TodosError() {
+  return (
+    <p>Error...</p>
+  );
+}
+
+export { TodosError };
+```
+
+Crear componente TodosLoading
+
+```jsx
+import React from 'react';
+import './TodosLoading.css';
+
+function TodosLoading() {
+  return (
+    <div className="LoadingTodo-container">
+      <span className="LoadingTodo-completeIcon"></span>
+      <p className="LoadingTodo-text"></p>
+      <span className="LoadingTodo-deleteIcon"></span>
+    </div>
+  );
+}
+
+export { TodosLoading };
+```
+
+en el archivo TodosLoading.css
+  
+```css
+.LoadingTodo-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  box-shadow: 0px 5px 50px rgba(32, 35, 41, 0.15);
+  border-radius: 10px;
+  padding: 12px 0;
+}
+
+.LoadingTodo-text {
+  margin: 24px 0 24px 24px;
+  width: calc(100% - 120px);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.LoadingTodo-completeIcon,
+.LoadingTodo-deleteIcon {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  height: 48px;
+  width: 48px;
+}
+.LoadingTodo-completeIcon {
+  position: absolute;
+  left: 12px;
+}
+.LoadingTodo-deleteIcon {
+  position: absolute;
+  top: -24px;
+  right: 0;
+}
+
+
+.LoadingTodo-container,
+.LoadingTodo-completeIcon,
+.LoadingTodo-deleteIcon {
+  background: linear-gradient(90deg, rgba(250,250,250,1), rgb(200, 199, 199));
+  background-size: 400% 400%;
+  animation: loadingAnimation 3s ease-in-out infinite;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+```
+
+en el archivo App/AppUI.js
+
+```jsx
+...
+import { TodosLoading } from '../TodosLoading';
+import { TodosError } from '../TodosError';
+import { EmptyTodos } from '../EmptyTodos';
+import { CreateTodoButton } from '../CreateTodoButton';
+
+function AppUI({
+  loading,
+  error,
+  completedTodos,
+  totalTodos,
+  searchValue,
+  setSearchValue,
+  searchedTodos,
+  completeTodo,
+  deleteTodo,
+}) {
+  return (
+    <>
+      ...
+      <TodoList>
+        {loading && (
+          <>
+            <TodosLoading />
+            <TodosLoading />
+            <TodosLoading />
+          </>
+        )}
+        {error && <TodosError/>}
+        {(!loading && searchedTodos.length === 0) && <EmptyTodos />}
+
+        ...
+      </TodoList>
+      
+      <CreateTodoButton />
+    </>
+  );
+}
+
+export { AppUI };
+```
+
+## React Context
+Context es una característica de React que nos permite compartir datos entre componentes sin tener que pasar props manualmente entre cada componente. Context es una forma de crear un estado global que puede ser consumido en cualquier componente de la aplicación.
+
+1. Crear el archivo src/TodoContext/index.js
+
+```jsx
+import React from 'react';
+import { useLocalStorage } from './useLocalStorage';
+
+const TodoContext = React.createContext();
+
+function TodoProvider({ children }) {
+  const {
+    item: todos,
+    saveItem: saveTodos,
+    loading,
+    error,
+  } = useLocalStorage('TODOS_V1', []);
+  const [searchValue, setSearchValue] = React.useState('');
+
+  const completedTodos = todos.filter(
+    todo => !!todo.completed
+  ).length;
+  const totalTodos = todos.length;
+
+  const searchedTodos = todos.filter(
+    (todo) => {
+      const todoText = todo.text.toLowerCase();
+      const searchText = searchValue.toLowerCase();
+      return todoText.includes(searchText);
+    }
+  );
+
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text === text
+    );
+    newTodos[todoIndex].completed = true;
+    saveTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text === text
+    );
+    newTodos.splice(todoIndex, 1);
+    saveTodos(newTodos);
+  };
+  
+  return (
+    <TodoContext.Provider value={{
+      loading,
+      error,
+      completedTodos,
+      totalTodos,
+      searchValue,
+      setSearchValue,
+      searchedTodos,
+      completeTodo,
+      deleteTodo,
+    }}>
+      {children}
+    </TodoContext.Provider>
+  );
+}
+
+export { TodoContext, TodoProvider };
+```
+
+2. Arrastrar localStorage a TodoContext
+3. En el componente AppUI.js importar el contexto
+
+```jsx
+...
+import { TodoContext } from '../TodoContext';
+
+function AppUI() {
+  return (
+    <>
+      <TodoCounter />
+      <TodoSearch />
+
+      <TodoContext.Consumer> // Recibe una funcion 
+        {({
+          loading,
+          error,
+          searchedTodos,
+          completeTodo,
+          deleteTodo,
+        }) => (
+          <TodoList>
+            {loading && (
+              <>
+                <TodosLoading />
+                <TodosLoading />
+                <TodosLoading />
+              </>
+            )}
+            {error && <TodosError/>}
+            {(!loading && searchedTodos.length === 0) && <EmptyTodos />}
+
+            {searchedTodos.map(todo => (
+              <TodoItem
+                key={todo.text}
+                text={todo.text}
+                completed={todo.completed}
+                onComplete={() => completeTodo(todo.text)}
+                onDelete={() => deleteTodo(todo.text)}
+              />
+            ))}
+          </TodoList>
+        )}
+      </TodoContext.Consumer>
+      
+      <CreateTodoButton />
+    </>
+  );
+}
+
+export { AppUI };
+```
+
+Otra forma de consumir el contexto es utilizando el hook useContext
+
+
+En el componente TodoCounter
+```jsx
+import React from 'react';
+import { TodoContext } from '../TodoContext';
+import './TodoCounter.css';
+
+function TodoCounter() {
+  const {
+    completedTodos,
+    totalTodos,
+  } = React.useContext(TodoContext);
+  
+  return (
+    <h1 className="TodoCounter">
+      Has completado <span>{completedTodos}</span> de <span>{totalTodos}</span> TODOs
+    </h1>
+  );
+}
+
+export { TodoCounter };
+```
+
+En el componente TodoSearch
+```jsx
+import React from 'react';
+import { TodoContext } from '../TodoContext';
+import './TodoSearch.css';
+
+function TodoSearch() {
+  const {
+    searchValue,
+    setSearchValue,
+  } = React.useContext(TodoContext);
+  
+  return (
+    <input
+      placeholder="Cortar cebolla"
+      className="TodoSearch"
+      value={searchValue}
+      onChange={(event) => {
+        setSearchValue(event.target.value);
+      }}
+    />
+  );
+}
+
+export { TodoSearch };
+```
+
+## React Portals
+Los Portales son una característica de React que nos permite renderizar un componente en cualquier parte del DOM, incluso fuera del contenedor principal de la aplicación.
+
+1. Crear el archivo src/Modal/index.js
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './Modal.css';
+
+function Modal({ children }) {
+  return ReactDOM.createPortal(
+    <div className="ModalBackground">
+      {children}
+    </div>,
+    document.getElementById('modal')
+  );
+}
+
+export { Modal };
+```
+
+2. Crear el estado en el contexto de la aplicacion 
+
+```jsx
+...
+
+function TodoProvider({ children }) {
+  ....
+  const [openModal, setOpenModal] = React.useState(true);
+  ....
+  return (
+    <TodoContext.Provider value={{
+      ....
+      openModal,
+      setOpenModal,
+    }}>
+      {children}
+    </TodoContext.Provider>
+  );
+}
+
+export { TodoContext, TodoProvider };
+```
+
+
+3. Modificar el archivo index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  ....
+  <body>
+    ....
+    <div id="root"></div>
+    <div id="modal"></div>
+    .... 
+  </body>
+</html>
+```
+
+4. Modificar el archivo Modal.css
+
+```css
+.ModalBackground {
+  background-color: rgba(32,35,41,.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+```
+
+5. Modificar el archivo AppUI.js
+
+```jsx
+....
+
+function AppUI() {
+  const {
+    ....
+    openModal,
+    setOpenModal,
+  } = React.useContext(TodoContext);
+  
+  return (
+    <>
+      ....
+      <CreateTodoButton
+        setOpenModal={setOpenModal}
+      />
+
+      {openModal && (
+        <Modal>
+          La funcionalidad de agregar TODO
+        </Modal>
+      )}
+    </>
+  );
+}
+
+export { AppUI };
+```
+
+6. Modificar el archivo CreateTodoButton.js
+
+```jsx
+import './CreateTodoButton.css';
+
+function CreateTodoButton({ setOpenModal }) {
+  return (
+    <button
+      className="CreateTodoButton"
+      onClick={
+        () => {
+          setOpenModal(state => !state);
+        }
+      }
+    >+</button>
+  );
+}
+
+export { CreateTodoButton };
+```
+
+7. Modificar el archivo createTodoButton.css
+
+```css
+.CreateTodoButton {
+  background-color: #61DAFA;
+  box-shadow: 0px 5px 25px rgba(97, 218, 250, 0.5);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 50px;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-weight: bold;
+  color: #FAFAFA;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  width: 64px;
+  z-index: 1;
+
+  transform: rotate(0);
+  transition: .3s ease;
+}
+
+.CreateTodoButton:hover {
+  transform: rotate(224deg);
+}
+```
+
+## Maquetando formularios en React
+- Crear el componente TodoForm/index.js
+
+```jsx
+import React from 'react';
+import { TodoContext } from '../TodoContext';
+import './TodoForm.css';
+
+function TodoForm() {
+  const {
+    addTodo,
+    setOpenModal,
+  } = React.useContext(TodoContext);
+  const [newTodoValue, setNewTodoValue] = React.useState('');
+
+  const onSubmit = (event) => {
+    event.preventDefault(); // Evita que se recargue la pagina
+    addTodo(newTodoValue);
+    setOpenModal(false);
+  };
+
+  const onCancel = () => {
+    setOpenModal(false);
+  };
+
+  const onChange = (event) => {
+    setNewTodoValue(event.target.value);
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <label>Escribe tu nuevo TODO</label>
+      <textarea // input multilinea
+        placeholder="Cortar cebolla para el almuerzo"
+        value={newTodoValue}
+        onChange={onChange}
+      />
+      <div className="TodoForm-buttonContainer">
+        <button
+          type="button"
+          className="TodoForm-button TodoForm-button--cancel"
+          onClick={onCancel}
+        >Cancelar</button>
+        <button
+          type="submit"
+          className="TodoForm-button TodoForm-button--add"
+        >Añadir</button>
+      </div>
+    </form>
+  );
+}
+
+export { TodoForm };
+```
+
+- Crear el componente TodoForm/TodoForm.css
+
+```css
+form {
+  width: 90%;
+  max-width: 300px;
+  background-color: #fff;
+  padding: 33px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+label {
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  color: #1E1E1F;
+  margin-bottom: 26px;
+}
+
+textarea {
+  background-color: #F9FBFC;
+  border: 2px solid #202329;
+  border-radius: 2px;
+  box-shadow: 0px 5px 50px rgba(32, 35, 41, 0.25);
+  color: #1E1E1F;
+  font-size: 20px;
+  text-align: center;
+  padding: 12px;
+  height: 96px;
+  width: calc(100% - 25px);
+}
+
+textarea::placeholder {
+  color: #A5A5A5;
+  font-family: 'Montserrat';
+  font-weight: 400;
+}
+
+textarea:focus {
+  outline-color: #61DAFA;
+}
+
+.TodoForm-buttonContainer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.TodoForm-button {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 20px;
+  color: #202329;
+  font-weight: 400;
+  width: 120px;
+  height: 48px;
+  border-radius: 2px;
+  border: none;
+  font-family: 'Montserrat';
+}
+
+.TodoForm-button--add {
+  background: #61DAFA;
+  box-shadow: 0px 5px 25px rgba(97, 218, 250, 0.5);
+}
+
+.TodoForm-button--cancel {
+  background: transparent;
+}
+```
+
+- Modificar AppUI.js
+
+```jsx
+....
+
+function AppUI() {
+  ....
+  
+  return (
+    <>
+      ....
+      {openModal && (
+        <Modal>
+          <TodoForm />
+        </Modal>
+      )}
+    </>
+  );
+}
+
+export { AppUI };
+```
+
+- Modificar TodoContext.js
+
+```jsx
+....
+
+const TodoContext = React.createContext();
+
+function TodoProvider({ children }) {
+  .... 
+
+  const addTodo = (text) => {
+    const newTodos = [...todos];
+    newTodos.push({
+      text,
+      completed: false,
+    });
+    saveTodos(newTodos);
+  };
+
+  ....
+  return (
+
+    <TodoContext.Provider value={{
+      ....
+      addTodo,
+      completeTodo,
+      deleteTodo,
+      openModal,
+      setOpenModal,
+    }}>
+      {children}
+    </TodoContext.Provider>
+  );
+}
+
+export { TodoContext, TodoProvider };
+```
+
+## Deploy de la aplicacion
+1. En el archivo package.json y modifica la propiedad Homepage para desplegar en github
+
+```js
+....
+"homepage": "https://usuario_git_hub.github.io/nombre_del_repositorio/",
+```
+
+2. Instalar gh-pages
+
+```bash
+npm install --save-dev gh-pages
+```
+
+3. Crear un script en el archivo package.json
+
+```js
+....
+"scripts": {
+  ....
+  "predeploy" : "npm run build",
+  "deploy": "gh-pages -d build"
+},
+```
+
+4. Ejecutar el script
+
+```bash
+npm run deploy
+```
+
+Si todo sale bien, deberia aparecer una nueva rama en el repositorio de github llamada gh-pages
+
+5. En la configuracion del repositorio de github, en la seccion de GitHub Pages, seleccionar la rama gh-pages y la carpeta root
+W
+6. Finalmente, en la seccion de GitHub Pages, aparecera la url de la aplicacion
+
+## Versiones de React
+- En la package.json se puede ver la version de react que se esta utilizando
+
+```js
+....
+"react": "^17.0.2",
+```
+
+Si cambias la version de react, debes ejecutar el siguiente comando
+
+```bash
+rm -rf node_modules
+rm package-lock.json
+npm install
+```
+
+Si tienes problemas, puedes buscar en la documentacion de react. Es importante saber adaptar a versiones anteriores de react, ya que es posible que en el futuro tengas que trabajar con proyectos que utilicen versiones anteriores de react.
+
+## Creando proyectos de React
+1. Crear un proyecto con create-react-app
+
+```bash
+npx create-react-app nombre_del_proyecto
+```
+
+2. Crear un proyecto con next.js
+
+```bash
+npm create-next-app@latest nombre_proyecto
+```
+
 ## TailwindCSS
 
 ## Instalacion de React con Vite y TailwindCSS
@@ -900,3 +2007,6 @@ export default App;
 ## Enlaces de interes
 
 1. [Google Fonts](https://fonts.google.com/)
+2. [Repositorio Aplicacion ToDos](https://github.com/platzi/curso-react-intro)
+3. [Figma Aplicacion ToDos](https://www.figma.com/file/3aZkIjXMEzBDACmWxqUVes/TODO-Machine-Mockup?node-id=0%3A1&mode=dev)
+4. [Figma 2 Aplicacion ToDos](https://www.figma.com/proto/3aZkIjXMEzBDACmWxqUVes/TODO-Machine-Mockup?type=design&amp%3Bnode-id=1-3&amp%3Bt=NH0HT6nS2TxaLKp4-1&amp%3Bscaling=min-zoom&amp%3Bpage-id=0%3A1&amp%3Bstarting-point-node-id=1%3A3&amp%3Bmode=design&node-id=1-3&starting-point-node-id=1%3A3)
