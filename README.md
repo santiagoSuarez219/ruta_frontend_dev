@@ -2572,9 +2572,6 @@ Agregar una animacion a las card
 ## Migrar desde tailwindcss 2.x a 3.x
 [Documentacion](https://tailwindcss.com/docs/upgrade-guide#configure-content-sources)
 
-  
-
-
 
 ## Instalacion de React con Vite y TailwindCSS ### Que es Vite Vite es un
 
