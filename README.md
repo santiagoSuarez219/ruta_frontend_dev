@@ -66,8 +66,33 @@
   - [Agregando el dark mode](#agregando-el-dark-mode)
   - [Preparando para produccion](#preparando-para-produccion)
   - [Migrar desde tailwindcss 2.x a 3.x](#migrar-desde-tailwindcss-2x-a-3x)
-  - [Instalacion de React con Vite y TailwindCSS ### Que es Vite Vite es un](#instalacion-de-react-con-vite-y-tailwindcss--que-es-vite-vite-es-un)
+  - [Instalacion de React con Vite y TailwindCSS](#instalacion-de-react-con-vite-y-tailwindcss)
+    - [Que es Vite](#que-es-vite)
+    - [Crear un proyecto con Vite](#crear-un-proyecto-con-vite)
     - [Instalacion de TailwindCSS](#instalacion-de-tailwindcss-1)
+    - [Proyecto del modulo](#proyecto-del-modulo)
+    - [Enrutamiento con React Router Dom](#enrutamiento-con-react-router-dom)
+    - [Componente NavBar](#componente-navbar)
+    - [Componente Layout](#componente-layout)
+    - [Componente Card](#componente-card)
+    - [Consumiendo una API](#consumiendo-una-api)
+    - [Contexto global de la aplicacion](#contexto-global-de-la-aplicacion)
+    - [Contador de productos en el carrito](#contador-de-productos-en-el-carrito)
+    - [Abriendo el detalle de cada producto](#abriendo-el-detalle-de-cada-producto)
+      - [Maquetacion e iconos](#maquetacion-e-iconos)
+      - [Logica del componente](#logica-del-componente)
+    - [Agregando el carrito de compras](#agregando-el-carrito-de-compras)
+      - [SlideMenu del carrito de compras](#slidemenu-del-carrito-de-compras)
+      - [Componente OrderCard](#componente-ordercard)
+      - [Evitando duplicados en el carrito de compras](#evitando-duplicados-en-el-carrito-de-compras)
+      - [Eliminar productos del carrito](#eliminar-productos-del-carrito)
+      - [Total de la compra](#total-de-la-compra)
+    - [Pagina MyOrders](#pagina-myorders)
+    - [Pagina MyOrders](#pagina-myorders-1)
+    - [Buscados de productos](#buscados-de-productos)
+    - [Filtrando por categorias](#filtrando-por-categorias)
+    - [Corrigiendo algunos bugs](#corrigiendo-algunos-bugs)
+    - [Deploy de React en Netlify](#deploy-de-react-en-netlify)
   - [Enlaces de interes](#enlaces-de-interes)
 
 ## ReactJS
@@ -2573,24 +2598,22 @@ Agregar una animacion a las card
 [Documentacion](https://tailwindcss.com/docs/upgrade-guide#configure-content-sources)
 
 
-## Instalacion de React con Vite y TailwindCSS ### Que es Vite Vite es un
+## Instalacion de React con Vite y TailwindCSS 
 
-nuevo compilador de código abierto que sirve para crear aplicaciones web
+### Que es Vite 
+Vite es un nuevo compilador de código abierto que sirve para crear aplicaciones web
 modernas con React, Vue, Svelte, Preact y TypeScript. Vite se centra en el
 tiempo de compilación y el tiempo de ejecución rápido. No es un marco
 completo, sino más bien un compilador de desarrollo que aprovecha las
 importaciones nativas de ES Module para lograr un tiempo de compilación rápido
-y un servidor de desarrollo instantáneo con recarga rápida. ### Que es
-TailwindCSS Tailwind CSS es un framework CSS de utilidad de bajo nivel que le
-permite crear rápidamente diseños personalizados y receptivos para sitios web.
-Tailwind CSS es un framework CSS de utilidad de bajo nivel que le permite
-crear rápidamente diseños personalizados y receptivos para sitios web. ###
-Crear un proyecto con Vite Para crear un proyecto con Vite, debemos tener
-instalado Node.js y npm. Luego, abrimos una terminal y ejecutamos el siguiente
-comando: ```bash npm create vite@latest
+y un servidor de desarrollo instantáneo con recarga rápida. 
 
-</div>
-````
+### Crear un proyecto con Vite 
+Para crear un proyecto con Vite, debemos tener instalado Node.js y npm. Luego, abrimos una terminal y ejecutamos el siguiente comando: 
+
+```bash 
+npm create vite@latest
+```
 
 ### Instalacion de TailwindCSS
 
@@ -2612,12 +2635,1835 @@ function App() {
 export default App;
 ```
 
-## Enlaces de interes
+### Proyecto del modulo
+En este modulo de React con vite y tailwind, vamos a construir una tienda en linea. Para empezar, se realiza un analisis de rutas y componentes en React.
 
+En este proyecto vamos a manejar la siguiente estructura de archivos. 
+
+1. Se va crear una carpeta **Pages** donde se van a crear las paginas de la aplicacion. Estas paginas son App,Home, MyOrders, MyAccount, SingIn, MyOrder, NotFound.
+
+*En la carpeta App debes trasladar todos los archivos referentes a App. Ten cuidadop porque debes modificcar las importaciones en el archivo main.jsx*
+
+Despues de crear las paginas debes importarlas en el archivo App/index.jsx
+
+```jsx
+import Home from '../Home'
+import MyAccount from '../MyAccount'
+import MyOrder from '../MyOrder'
+import MyOrders from '../MyOrders'
+import NotFound from '../NotFound'
+import SignIn from '../SignIn'
+import './App.css'
+
+const App = () => {
+  return (
+    <div className="bg-red-100">
+      <Home />
+      <MyAccount />
+      <MyOrder />
+      <MyOrders />
+      <NotFound />
+      <SignIn />
+    </div>
+  )
+}
+
+export default App
+```
+
+### Enrutamiento con React Router Dom
+1. Instalar react router dom
+
+```bash
+npm install react-router-dom
+```
+
+2. En App/index.jsx
+
+```jsx
+import { useRoutes, BrowserRouter } from 'react-router-dom'
+....
+
+const AppRoutes = () => {
+  let routes = useRoutes([
+    { path: '/', element: <Home /> },
+    { path: '/my-account', element: <MyAccount /> },
+    { path: '/my-order', element: <MyOrder /> },
+    { path: '/my-orders', element: <MyOrders /> },
+    { path: '/sign-in', element: <SignIn /> },
+    { path: '/*', element: <NotFound /> },
+  ])
+
+  return routes
+}
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  )
+}
+
+export default App
+```
+
+### Componente NavBar
+1. Crear carpeta components y dentro de ella crear la carpeta NavBar/index.jsx
+2. Componente [NavLink](https://reactrouter.com/en/main/components/nav-link)
+
+**Explicacion de algunas partes del codigo**
+```jsx
+<NavLink
+  to='/'
+  className={({ isActive }) =>
+    isActive ? activeStyle : undefined
+  }>
+  All
+</NavLink>
+```
+
+NavLink es un componente que nos permite crear links en nuestra aplicacion. El atributo `to` es el destino del link.  El atributo isActive es una funcion que nos permite agregar estilos cuando el link esta activo.
+
+**Clases nuevas de Tailwind**
+- *Gap*: Nos permite agregar un espacio entre los elementos de un contenedor.
+
+[Documentacion](https://tailwindcss.com/docs/gap)
+
+- *underline*: Nos permite agregar una linea debajo del texto.
+
+- *underline-offset*: Nos permite agregar un espacio entre el texto y la linea.
+
+```jsx
+import { NavLink } from 'react-router-dom'
+
+const Navbar = () => {
+  const activeStyle = 'underline underline-offset-4' // Estilo para cuando el link esta activo
+
+  return (
+    <nav className='flex justify-between items-center fixed z-10 w-full py-5 px-8 text-sm font-light'>
+      <ul className='flex items-center gap-3'>
+        <li className='font-semibold text-lg'>
+          <NavLink to='/'>
+            Shopi
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            All
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/clothes'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Clothes
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/electronics'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Electronics
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/furnitures'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Furnitures
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/toys'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Toys
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/others'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Others
+          </NavLink>
+        </li>
+      </ul>
+      <ul className='flex items-center gap-3'>
+        <li className='text-black/60'>
+          teff@platzi.com
+        </li>
+        <li>
+          <NavLink
+            to='/my-orders'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            My Orders
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/my-account'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            My Account
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/sing-in'
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Sign In
+          </NavLink>
+        </li>
+        <li>
+          🛒 0
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+export default Navbar
+```
+
+1. En App/index.jsx
+
+```jsx
+....
+import Navbar from '../../Components/Navbar'
+import './App.css'
+
+const AppRoutes = () => {
+  let routes = useRoutes([
+    { path: '/', element: <Home /> },
+    { path: '/my-account', element: <MyAccount /> },
+    { path: '/my-order', element: <MyOrder /> },
+    { path: '/my-orders', element: <MyOrders /> },
+    { path: '/sign-in', element: <SignIn /> },
+    { path: '/*', element: <NotFound /> },
+  ])
+
+  return routes
+}
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+      <Navbar />
+    </BrowserRouter>
+  )
+}
+
+export default App
+```
+
+### Componente Layout
+1. Crear carpeta Layout y dentro de ella crear el archivo index.jsx
+2. En el archivo index.jsx
+
+```jsx
+const Layout = ({ children }) => {
+  return (
+    <div className='flex flex-col items-center mt-20'>
+      {children}
+    </div>
+  )
+}
+
+export default Layout
+```
+
+3. En Home/index.jsx
+
+```jsx
+import Layout from '../../Components/Layout'
+
+function Home() {
+  return (
+    <Layout>
+      Home
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+4. Replicar lo mismo en las demas paginas.
+
+### Componente Card
+1. Crear carpeta Components/Card y dentro de ella crear el archivo index.jsx
+
+**Clases de tailwind nuevas**
+- *cursor-pointer*: Nos permite cambiar el cursor del mouse cuando pasamos por encima de un elemento.
+- *object-cover*: Nos permite ajustar la imagen al tamaño del contenedor. [Documentacion](https://tailwindcss.com/docs/object-fit#basic-usage)
+
+```jsx
+const Card = () => {
+  return (
+    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
+      <figure className='relative mb-2 w-full h-4/5'>
+        <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>Electronics</span>
+        <img className='w-full h-full object-cover rounded-lg' src='https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' alt='headphones' />
+        <div className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'>
+          +
+        </div>
+      </figure>
+      <p className='flex justify-between'>
+        <span className='text-sm font-light'>Headphones</span>
+        <span className='text-lg font-medium'>$300</span>
+      </p>
+    </div>
+  )
+}
+
+export default Card
+```
+
+### Consumiendo una API
+[API](https://fakeapi.platzi.com/)
+
+1. En Home/index.jsx
+
+**Explicacion de algunas partes del codigo**
+- *fetch*: Nos permite hacer peticiones a una API.La estructura de la peticion es la siguiente:
+
+```jsx
+fetch('url de la api')
+  .then(response => response.json())
+  .then(data => console.log(data))
+```
+
+o tambien puedes hacerlo de la siguiente manera:
+
+```jsx
+const response = await fetch('url de la api')
+const data = await response.json()
+console.log(data)
+```
+- *map*: Nos permite recorrer un arreglo y retornar un nuevo arreglo con los elementos que necesitamos. La estructura es la siguiente:
+
+```jsx
+const array = [1,2,3,4,5]
+const newArray = array.map(item => item * 2)
+console.log(newArray) // [2,4,6,8,10]
+```
+
+En este caso, vamos a recorrer los items, si estos existen. Vamos a crear un componente Card por cada item que se tenga (React nos dice que por cada elementos debemos tener un id).
+
+*Cuando trabajamos con lambda function podemos tener un return de dos maneras: la primera es cuando tenemos una sola linea de codigo y la segunda es cuando tenemos mas de una linea de codigo.*
+
+```jsx
+const array = [1,2,3,4,5]
+const newArray = array.map(item => item * 2)
+console.log(newArray) // [2,4,6,8,10]
+```
+
+```jsx
+const array = [1,2,3,4,5]
+const newArray = array.map(item => {
+  const newItem = item * 2
+  return newItem
+})
+console.log(newArray) // [2,4,6,8,10]
+```
+
+**Clases de tailwind nuevas**
+- *grid-col*: Nos permite definir el numero de columnas que va a tener un contenedor. [Documentacion](https://tailwindcss.com/docs/grid-template-columns)
+- max-w-screen-lg: Nos permite definir el ancho maximo de un contenedor. [Documentacion](https://tailwindcss.com/docs/max-width)
+
+
+```jsx
+import { useState, useEffect } from 'react'
+import Layout from '../../Components/Layout'
+import Card from '../../Components/Card'
+
+const Home = () => {
+  const [items, setItems] = useState(null)
+
+  useEffect(() => {
+    fetch('https://api.escuelajs.co/api/v1/products')
+      .then(response => response.json())
+      .then(data => setItems(data))
+  }, [])
+
+  return (
+    <Layout>
+      Home
+      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg'>
+        {
+          items?.map(item => (
+            <Card key={item.id} data={item} />
+          ))
+        }
+      </div>
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+2. En Card/index.jsx
+
+```jsx
+const Card = (data) => {
+  return (
+    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
+      <figure className='relative mb-2 w-full h-4/5'>
+        <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>{data.data.category.name}</span>
+        <img className='w-full h-full object-cover rounded-lg' src={data.data.images[0]} alt={data.data.title} />
+        <div className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'>
+          +
+        </div>
+      </figure>
+      <p className='flex justify-between'>
+        <span className='text-sm font-light'>{data.data.title}</span>
+        <span className='text-lg font-medium'>${data.data.price}</span>
+      </p>
+    </div>
+  )
+}
+
+export default Card
+```
+
+### Contexto global de la aplicacion
+1. Crear la carpeta src/Context y dentro de ella crear el archivo index.jsx
+
+**Explicacion de algunas partes del codigo**
+
+```jsx
+import { createContext } from 'react'
+
+const ShoppingCartContext = createContext()
+
+export const ShoppingCartProvider = ({children}) => {
+  return (
+    <ShoppingCartContext.Provider>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En App/index.jsx
+
+```jsx
+....
+import { ShoppingCartProvider } from '../../Context'
+....
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <ShoppingCartProvider>
+        <AppRoutes />
+        <Navbar />
+      </ShoppingCartProvider>
+    </BrowserRouter>
+  )
+}
+
+export default App
+```
+
+### Contador de productos en el carrito
+1. En Context/index.jsx
+
+```jsx
+import { createContext, useState } from 'react'
+
+export const ShoppingCartContext = createContext()
+
+export const ShoppingCartProvider = ({children}) => {
+  const [count, setCount] = useState(0)
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      count,
+      setCount
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En Card/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { ShoppingCartContext } from '../../Context'
+
+const Card = (data) => {
+  const context = useContext(ShoppingCartContext)
+
+  return (
+    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
+        ....
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
+          onClick={() => context.setCount(context.count + 1)}>
+          +
+        </div>
+      ....
+    </div>
+  )
+}
+
+export default Card
+```
+
+3. En Navbar/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { NavLink } from 'react-router-dom'
+import { ShoppingCartContext } from '../../Context'
+
+const Navbar = () => {
+  const context = useContext(ShoppingCartContext)
+  ....
+
+  return (
+    <nav className='flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light'>
+      ....
+      <ul className='flex items-center gap-3'>
+        ....
+        <li>
+          🛒 {context.count}
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+export default Navbar
+```
+
+### Abriendo el detalle de cada producto
+#### Maquetacion e iconos
+1. Crear Componets/ProductDetail y dentro de ella crear el archivo index.jsx
+
+**Explicacion de algunas partes del codigo**
+- *aside*: Nos permite crear un contenedor que se va a ubicar en el lado derecho de la pantalla.
+- *height: calc(100vh - 68px)*: Nos permite definir el alto del contenedor. En este caso, el alto va a ser el 100% de la pantalla menos 68px. 68px corresponde al alto de la barra de navegacion. Esta funcionalidad permite que no haya un scroll en la pagina.
+
+**Clases nuevas de tailwind**
+
+*Puedes utilizar clases de CSS junto con Tailwind*
+
+2. Crear ProductDetail/styles.css
+
+```css
+.product-detail {
+  width: 360px;
+  height: calc(100vh - 68px);
+  top: 68px;
+}
+```
+
+3. Puedes utilizar la libreria heroicons para agregar iconos a tu aplicacion. [Documentacion](https://heroicons.com/)
+
+```jsx
+import { XMarkIcon } from '@heroicons/react/24/solid'
+import './styles.css'
+
+const ProductDetail = () => {
+  return (
+    <aside className='product-detail flex flex-col fixed right-0 border border-black rounded-lg bg-white'>
+      <div className='flex justify-between items-center p-6'>
+        <h2 className='font-medium text-xl'>Detail</h2>
+        <div>
+          <XMarkIcon className='h-6 w-6 text-black'></XMarkIcon>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+export default ProductDetail
+```
+
+3. En Home/index.jsx
+
+```jsx
+....
+import ProductDetail from '../../Components/ProductDetail'
+
+function Home() {
+  ....
+
+  return (
+    <Layout>
+      Home
+      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg'>
+        {
+          items?.map(item => (
+            <Card key={item.id} data={item} />
+          ))
+        }
+      </div>
+      <ProductDetail />
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+4. En Navbar/index.jsx
+
+```jsx
+....
+import { ShoppingBagIcon } from '@heroicons/react/24/solid'
+import { ShoppingCartContext } from '../../Context'
+
+const Navbar = () => {
+  ....
+  return (
+    <nav className='flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light'>
+      <ul className='flex items-center gap-3'>
+        ....
+        <li className='flex items-center'>
+          <ShoppingBagIcon className='h-6 w-6 text-black'></ShoppingBagIcon>
+          <div>{context.count}</div>
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+export default Navbar
+```
+
+5. en Card/index.jsx
+
+```jsx
+....
+import { PlusIcon } from '@heroicons/react/24/solid'
+import { ShoppingCartContext } from '../../Context'
+
+const Card = (data) => {
+  ....
+  return (
+    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
+      <figure className='relative mb-2 w-full h-4/5'>
+        ....
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
+          onClick={() => context.setCount(context.count + 1)}>
+          <PlusIcon className='h-6 w-6 text-black'></PlusIcon>
+        </div>
+      </figure>
+      ....
+    </div>
+  )
+}
+
+export default Card
+```
+
+#### Logica del componente
+1. En Context/index.jsx
+
+```jsx
+....
+
+export const ShoppingCartProvider = ({children}) => {
+  // Shopping Cart · Increment quantity
+  const [count, setCount] = useState(0)
+
+  // Product Detail · Open/Close
+  const [isProductDetailOpen, setIsProductDetailOpen] = useState(false)
+  const openProductDetail = () => setIsProductDetailOpen(true)
+  const closeProductDetail = () => setIsProductDetailOpen(false)
+
+  // Product Detail · Show product
+  const [productToShow, setProductToShow] = useState({})
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      count,
+      setCount,
+      openProductDetail,
+      closeProductDetail,
+      isProductDetailOpen,
+      productToShow,
+      setProductToShow
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En Card/index.jsx
+
+```jsx
+....
+
+const Card = (data) => {
+.... 
+
+  const showProduct = (productDetail) => {
+    context.openProductDetail()
+    context.setProductToShow(productDetail)
+  }
+
+  return (
+    <div
+      className='bg-white cursor-pointer w-56 h-60 rounded-lg'
+      onClick={() => showProduct(data.data)}>
+      ....
+    </div>
+  )
+}
+
+export default Card
+```
+
+3. En ProductDetail/index.jsx
+
+```jsx
+....
+import { ShoppingCartContext } from '../../Context'
+import './styles.css'
+
+const ProductDetail = () => {
+  ....
+  return (
+    <aside
+      className={`${context.isProductDetailOpen ? 'flex' : 'hidden'} product-detail flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      <div className='flex justify-between items-center p-6'>
+        <h2 className='font-medium text-xl'>Detail</h2>
+        <div>
+          <XMarkIcon
+            className='h-6 w-6 text-black cursor-pointer'
+            onClick={() => context.closeProductDetail()}></XMarkIcon>
+        </div>
+      </div>
+      <figure className='px-6'>
+        <img
+          className='w-full h-full rounded-lg'
+          src={context.productToShow.images[0]}
+          alt={context.productToShow.title} />
+      </figure>
+      <p className='flex flex-col p-6'>
+        <span className='font-medium text-2xl mb-2'>${context.productToShow.price}</span>
+        <span className='font-medium text-md'>${context.productToShow.title}</span>
+        <span className='font-light text-sm'>${context.productToShow.description}</span>
+      </p>
+    </aside>
+  )
+}
+
+export default ProductDetail
+```
+
+### Agregando el carrito de compras
+1. Vamos a crear la funcionalidad de llevar productos a un carrito de compras
+
+En Context/index.jsx
+
+```jsx
+....
+
+export const ShoppingCartProvider = ({children}) => {
+  ....
+  // Checkout Side Menu · Open/Close
+  const [isCheckoutSideMenuOpen, setIsCheckoutSideMenuOpen] = useState(false)
+  const openCheckoutSideMenu = () => setIsCheckoutSideMenuOpen(true)
+  const closeCheckoutSideMenu = () => setIsCheckoutSideMenuOpen(false)
+
+  // Shopping Cart · Add products to cart
+  const [cartProducts, setCartProducts] = useState([])
+
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      ....
+      cartProducts,
+      setCartProducts,
+      isCheckoutSideMenuOpen,
+      openCheckoutSideMenu,
+      closeCheckoutSideMenu
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En Card/index.jsx
+
+```jsx
+....
+
+const Card = (data) => {
+  ....
+
+  const addProductsToCart = (productData) => {
+    context.setCount(context.count + 1)
+    context.setCartProducts([...context.cartProducts, productData])
+    console.log('CART: ', context.cartProducts)
+  }
+
+  return (
+    <div
+      className='bg-white cursor-pointer w-56 h-60 rounded-lg'
+      onClick={() => showProduct(data.data)}>
+      <figure className='relative mb-2 w-full h-4/5'>
+        ....
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
+          onClick={() => addProductsToCart(data.data)}>
+          <PlusIcon className='h-6 w-6 text-black'></PlusIcon>
+        </div>
+      </figure>
+    </div>
+  )
+}
+
+export default Card
+```
+
+#### SlideMenu del carrito de compras
+1. En Components/SlideMenu y dentro de ella crear el archivo index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { XMarkIcon } from '@heroicons/react/24/solid'
+import { ShoppingCartContext } from '../../Context'
+import './styles.css'
+
+const CheckoutSideMenu = () => {
+  const context = useContext(ShoppingCartContext)
+
+  return (
+    <aside
+      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      <div className='flex justify-between items-center p-6'>
+        <h2 className='font-medium text-xl'>My Order</h2>
+        <div>
+          <XMarkIcon
+            className='h-6 w-6 text-black cursor-pointer'
+            onClick={() => context.closeCheckoutSideMenu()}></XMarkIcon>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+2. en SlideMenu/styles.css
+
+```css
+.checkout-side-menu {
+  width: 360px;
+  height: calc(100vh - 68px);
+  top: 68px;
+}
+```
+
+3. En Card/index.jsx
+
+```jsx
+....
+
+const Card = (data) => {
+  ....
+
+  const addProductsToCart = (event, productData) => {
+    event.stopPropagation() // Evita que se propague el evento, es decir, que no se ejecute el evento del padre
+    context.setCount(context.count + 1)
+    context.setCartProducts([...context.cartProducts, productData])
+    context.openCheckoutSideMenu()
+    context.closeProductDetail()
+    console.log('CART: ', context.cartProducts)
+  }
+
+  return (
+    <div
+      className='bg-white cursor-pointer w-56 h-60 rounded-lg'
+      onClick={() => showProduct(data.data)}>
+      <figure className='relative mb-2 w-full h-4/5'>
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
+          onClick={(event) => addProductsToCart(event, data.data)}>
+          <PlusIcon className='h-6 w-6 text-black'></PlusIcon>
+        </div>
+      </figure>
+      ....
+    </div>
+  )
+}
+
+export default Card
+```
+
+4. En App/index.jsx. Para que el carrito pueda abrirse desde cualquier parte de la aplicacion
+
+```jsx
+....
+import CheckoutSideMenu from '../../Components/CheckoutSideMenu'
+import './App.css'
+
+....
+
+const App = () => {
+  return (
+    <ShoppingCartProvider>
+      <BrowserRouter>
+        ....
+        <CheckoutSideMenu />
+      </BrowserRouter>
+    </ShoppingCartProvider>
+  )
+}
+
+export default App
+```
+
+#### Componente OrderCard
+1. En Components/OrderCard y dentro de ella crear el archivo index.jsx
+
+```jsx
+import { XMarkIcon } from '@heroicons/react/24/solid'
+
+const OrderCard = props => {
+  const { title, imageUrl, price } = props
+
+  return (
+    <div className="flex justify-between items-center mb-3">
+      <div className='flex items-center gap-2'>
+        <figure className='w-20 h-20'>
+          <img className='w-full h-full rounded-lg object-cover' src={imageUrl} alt={title} />
+        </figure>
+        <p className='text-sm font-light'>{title}</p>
+      </div>
+      <div className='flex items-center gap-2'>
+        <p className='text-lg font-medium'>{price}</p>
+        <XMarkIcon className='h-6 w-6 text-black cursor-pointer'></XMarkIcon>
+      </div>
+    </div>
+  )
+}
+
+export default OrderCard
+```
+
+2. En CheckoutSideMenu/index.jsx
+
+```jsx
+....
+import OrderCard from '../../Components/OrderCard'
+import './styles.css'
+
+const CheckoutSideMenu = () => {
+  ....
+
+  return (
+    <aside
+      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      <div className='px-6 overflow-y-scroll'>
+        {
+          context.cartProducts.map(product => (
+            <OrderCard
+              key={product.id}
+              title={product.title}
+              imageUrl={product.images}
+              price={product.price}
+            />
+          ))
+        }
+      </div>
+    </aside>
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+#### Evitando duplicados en el carrito de compras
+
+1. En Card/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { PlusIcon, CheckIcon } from '@heroicons/react/24/solid'
+import { ShoppingCartContext } from '../../Context'
+
+const Card = (data) => {
+  ....
+  const renderIcon = (id) => {
+    const isInCart = context.cartProducts.filter(product => product.id === id).length > 0
+
+    if (isInCart) {
+      return (
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-black w-6 h-6 rounded-full m-2 p-1'>
+          <CheckIcon className='h-6 w-6 text-white'></CheckIcon>
+        </div>
+      )
+    } else {
+      return (
+        <div
+          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
+          onClick={(event) => addProductsToCart(event, data.data)}>
+          <PlusIcon className='h-6 w-6 text-black'></PlusIcon>
+        </div>
+      )
+    }
+  }
+
+  return (
+    <div
+      className='bg-white cursor-pointer w-56 h-60 rounded-lg'
+      onClick={() => showProduct(data.data)}>
+      <figure className='relative mb-2 w-full h-4/5'>
+        <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>{data.data.category.name}</span>
+        <img className='w-full h-full object-cover rounded-lg' src={data.data.images[0]} alt={data.data.title} />
+        {renderIcon(data.data.id)}
+      </figure>
+      <p className='flex justify-between'>
+        <span className='text-sm font-light'>{data.data.title}</span>
+        <span className='text-lg font-medium'>${data.data.price}</span>
+      </p>
+    </div>
+  )
+}
+
+export default Card
+```
+
+#### Eliminar productos del carrito
+1. En Components/OrderCard/index.jsx
+
+```jsx
+....
+
+const OrderCard = props => {
+  const { id, title, imageUrl, price, handleDelete } = props
+
+  return (
+    <div className="flex justify-between items-center mb-3">
+      ....
+      <div className='flex items-center gap-2'>
+        <p className='text-lg font-medium'>{price}</p>
+        <XMarkIcon onClick={() => handleDelete(id)} className='h-6 w-6 text-black cursor-pointer'></XMarkIcon>
+      </div>
+    </div>
+  )
+}
+
+export default OrderCard
+```
+
+2. En CheckoutSideMenu/index.jsx
+
+```jsx
+....
+
+const CheckoutSideMenu = () => {
+  ....
+  const handleDelete = (id) => {
+    const filteredProducts = context.cartProducts.filter(product => product.id != id)
+    context.setCartProducts(filteredProducts)
+  }
+
+  return (
+    <aside
+      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      ....
+      <div className='px-6 overflow-y-scroll'>
+        {
+          context.cartProducts.map(product => (
+            <OrderCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              imageUrl={product.images}
+              price={product.price}
+              handleDelete={handleDelete}
+            />
+          ))
+        }
+      </div>
+    </aside>
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+#### Total de la compra
+1. En utils/index.js
+
+```js
+/**
+ * This function calculates total price of a new order
+ * @param {Array} products cartProduct: Array of Objects
+ * @returns {numer} Total price
+ */
+
+// Lo anterior es un comentario de la funcion 
+export const totalPrice = (products) => {
+  let sum = 0
+  products.forEach(product => sum += product.price)
+  return sum
+}
+```
+
+2. En CheckoutSideMenu/index.jsx
+
+```jsx
+....
+import { totalPrice } from '../../utils'
+import './styles.css'
+
+const CheckoutSideMenu = () => {
+  ....
+
+  return (
+    <aside
+      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      
+      <div className='px-6'>
+        <p className='flex justify-between items-center'>
+          <span className='font-light'>Total:</span>
+          <span className='font-medium text-2xl'>${totalPrice(context.cartProducts)}</span>
+        </p>
+      </div>
+    </aside>
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+### Pagina MyOrders
+1. En Context/index.jsx
+  
+```jsx
+....
+
+export const ShoppingCartProvider = ({children}) => {
+  ....
+  const [order, setOrder] = useState([])
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      ....
+      order,
+      setOrder
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En CheckoutSideMenu/index.jsx
+  
+```jsx
+import {Link} from 'react-router-dom'
+....
+
+const CheckoutSideMenu = () => {
+  ....
+
+  const handleCheckout = () => {
+    const orderToAdd = {
+      date: '01.02.23',
+      products: context.cartProducts,
+      totalProducts: context.cartProducts.length,
+      totalPrice: totalPrice(context.cartProducts)
+    }
+
+    context.setOrder([...context.order, orderToAdd])
+    context.setCartProducts([])
+  }
+
+  return (
+    <aside
+      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
+      ....
+      <div className='px-6 overflow-y-scroll flex-1'>
+        {
+          context.cartProducts.map(product => (
+            <OrderCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              imageUrl={product.images}
+              price={product.price}
+              handleDelete={handleDelete}
+            />
+          ))
+        }
+      </div>
+      <div className='px-6 mb-6'>
+        <p className='flex justify-between items-center mb-2'>
+          <span className='font-light'>Total:</span>
+          <span className='font-medium text-2xl'>${totalPrice(context.cartProducts)}</span>
+        </p>
+        <Link to='my-orders/last'>
+        <button className='bg-black py-3 text-white w-full rounded-lg' onClick={() => handleCheckout()}>Checkout</button>
+      </div>
+    </aside>
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+3. en App/index.jsx
+
+```jsx
+....
+
+const AppRoutes = () => {
+  let routes = useRoutes([
+    ....
+    { path: '/my-orders/last', element: <MyOrder /> },
+    ....
+  ])
+  return routes
+}
+
+const App = () => {
+  return (
+    ....
+  )
+}
+
+export default App
+```
+
+4. En MyOrder/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { ShoppingCartContext } from '../../Context'
+import Layout from '../../Components/Layout'
+import OrderCard from '../../Components/OrderCard'
+
+function MyOrder() {
+  const context = useContext(ShoppingCartContext)
+
+  return (
+    <Layout>
+      MyOrder
+      <div className='flex flex-col w-80'>
+        {
+          context.order?.slice(-1)[0].products.map(product => (
+            <OrderCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              imageUrl={product.images}
+              price={product.price}
+            />
+          ))
+        }
+      </div>
+    </Layout>
+  )
+}
+
+export default MyOrder
+```
+
+5. En OrderCard/index.jsx
+
+```jsx
+....
+
+const OrderCard = props => {
+  const { id, title, imageUrl, price, handleDelete } = props
+
+  let renderXMarkIcon
+  if (handleDelete) {
+    renderXMarkIcon = <XMarkIcon onClick={() => handleDelete(id)} className='h-6 w-6 text-black cursor-pointer'></XMarkIcon>
+  }
+
+  return (
+    <div className="flex justify-between items-center mb-3">
+     ....
+      <div className='flex items-center gap-2'>
+        <p className='text-lg font-medium'>{price}</p>
+        {renderXMarkIcon}
+      </div>
+    </div>
+  )
+}
+
+export default OrderCard
+```
+
+### Pagina MyOrders
+1. En Components/OrdersCard/index.jsx
+
+```jsx
+import { XMarkIcon } from '@heroicons/react/24/solid'
+
+const OrdersCard = props => {
+  const { totalPrice, totalProducts } = props
+
+  return (
+    <div className="flex justify-between items-center mb-3 border border-black">
+      <p>
+        <span>01.02.23</span>
+        <span>{totalProducts}</span>
+        <span>{totalPrice}</span>
+      </p>
+    </div>
+  )
+}
+
+export default OrdersCard
+```
+
+2. En Pages/MyOrders/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { Link } from 'react-router-dom'
+import Layout from '../../Components/Layout'
+import { ShoppingCartContext } from '../../Context'
+import OrdersCard from '../../Components/OrdersCard'
+
+function MyOrders() {
+  const context = useContext(ShoppingCartContext)
+
+  return (
+    <Layout>
+      <div className='flex items-center justify-center relative w-80'>
+        <h1>My Orders</h1>
+      </div>
+      {
+        context.order.map((order, index) => (
+          <Link key={index} to={`/my-orders/${index}`}>
+            <OrdersCard
+              totalPrice={order.totalPrice}
+              totalProducts={order.totalProducts} />
+          </Link>
+        ))
+      }
+    </Layout>
+  )
+}
+
+export default MyOrders
+```
+
+3. En Pages/MyOrder/index.jsx
+
+```jsx
+import { useContext } from 'react'
+import { Link } from 'react-router-dom'
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+....
+
+function MyOrder() {
+  ....
+
+  return (
+    <Layout>
+      <div className='flex items-center justify-center relative w-80 mb-6'>
+        <Link to='/my-orders' className='absolute left-0'>
+          <ChevronLeftIcon className='h-6 w-6 text-black cursor-pointer' />
+        </Link>
+        <h1>My Order</h1>
+      </div>
+      ....
+    </Layout>
+  )
+}
+
+export default MyOrder
+```
+
+4. En MyOrder/index.jsx
+
+```jsx
+....
+
+function MyOrder() {
+  ....
+  const currentPath = window.location.pathname
+  let index = currentPath.substring(currentPath.lastIndexOf('/') + 1)
+  if (index === 'last') index = context.order?.length - 1
+
+  return (
+    <Layout>
+      ....
+      <div className='flex flex-col w-80'>
+        {
+          context.order?.[index]?.products.map(product => (
+            <OrderCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              imageUrl={product.images}
+              price={product.price}
+            />
+          ))
+        }
+      </div>
+    </Layout>
+  )
+}
+
+export default MyOrder
+```
+
+5. En App/index.jsx
+
+```jsx
+....
+
+const AppRoutes = () => {
+  let routes = useRoutes([
+    ....
+    { path: '/my-orders', element: <MyOrders /> },
+    { path: '/my-orders/last', element: <MyOrder /> },
+    { path: '/my-orders/:id', element: <MyOrder /> },
+    ....
+  ])
+
+  return routes
+}
+....
+```
+
+6. En OrdersCard/index.jsx
+
+```jsx
+....
+
+const OrdersCard = props => {
+  ....
+  return (
+    <div className="flex justify-between items-center mb-3 border border-black rounded-lg p-4 w-80">
+      <div className='flex justify-between w-full'>
+        <p className='flex flex-col'>
+          <span className='font-light'>01.02.23</span>
+          <span className='font-light'>{totalProducts} articles</span>
+        </p>
+        <p className='flex items-center gap-2'>
+          <span className='font-medium text-2xl'>${totalPrice}</span>
+          <ChevronRightIcon className='h-6 w-6 text-black cursor-pointer' />
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default OrdersCard
+```
+
+### Buscados de productos
+1. En Context/index.jsx
+
+```jsx
+import { createContext, useState, useEffect } from 'react'
+
+...
+
+export const ShoppingCartProvider = ({children}) => {
+  ....
+  // Get products
+  const [items, setItems] = useState(null)
+
+  // Get products by title
+  const [searchByTitle, setSearchByTitle] = useState(null)
+  console.log('searchByTitle: ', searchByTitle)
+
+  useEffect(() => {
+    fetch('https://api.escuelajs.co/api/v1/products')
+      .then(response => response.json())
+      .then(data => setItems(data))
+  }, [])
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      ....
+      items,
+      setItems,
+      searchByTitle,
+      setSearchByTitle
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+2. En Home/index.jsx
+
+```jsx
+import { useContext } from 'react'
+....
+
+function Home() {
+  ....
+  return (
+    <Layout>
+      <div className='flex items-center justify-center relative w-80 mb-4'>
+        <h1 className='font-medium text-xl'>Exclusive Products</h1>
+      </div>
+      <input
+        type="text"
+        placeholder='Search a product'
+        className='rounded-lg border border-black w-80 p-4 mb-4 focus:outline-none'
+        onChange={(event) => context.setSearchByTitle(event.target.value)} />
+      ....
+      <ProductDetail />
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+4. En Context/index.jsx
+
+```jsx
+....
+
+export const ShoppingCartProvider = ({children}) => {
+  ....
+  const [filteredItems, setFilteredItems] = useState(null)
+
+  // Get products by title
+  const [searchByTitle, setSearchByTitle] = useState(null)
+
+  useEffect(() => {
+    fetch('https://api.escuelajs.co/api/v1/products')
+      .then(response => response.json())
+      .then(data => setItems(data))
+  }, [])
+
+  const filteredItemsByTitle = (items, searchByTitle) => {
+    return items?.filter(item => item.title.toLowerCase().includes(searchByTitle.toLowerCase()))
+  }
+
+  useEffect(() => {
+    if (searchByTitle) setFilteredItems(filteredItemsByTitle(items, searchByTitle))
+  }, [items, searchByTitle])
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      ...
+      searchByTitle,
+      setSearchByTitle,
+      filteredItems
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+3. En Home/index.jsx
+
+```jsx
+.... 
+
+function Home() {
+  ....
+
+  const renderView = () => {
+    if (context.searchByTitle?.length > 0) {
+      if (context.filteredItems?.length > 0) {
+        return (
+          context.filteredItems?.map(item => (
+            <Card key={item.id} data={item} />
+          ))
+        )
+      } else {
+        return (
+          <div>We don't have anything :(</div>
+        )
+      }
+    } else {
+      return (
+        context.items?.map(item => (
+          <Card key={item.id} data={item} />
+        ))
+      )
+    }
+  }
+
+  return (
+    <Layout>
+      ....
+      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg'>
+        {renderView()}
+      </div>
+      <ProductDetail />
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+### Filtrando por categorias
+1. En App/index.jsx
+
+```jsx
+....
+
+const AppRoutes = () => {
+  let routes = useRoutes([
+    { path: '/', element: <Home /> },
+    { path: '/clothes', element: <Home /> },
+    { path: '/electronics', element: <Home /> },
+    { path: '/furnitures', element: <Home /> },
+    { path: '/toys', element: <Home /> },
+    { path: '/othes', element: <Home /> },
+    ....
+  ])
+  return routes
+}
+....
+```
+
+2. En Navbar/index.jsx
+
+```jsx
+....
+import { ShoppingCartContext } from '../../Context'
+
+const Navbar = () => {
+  const context = useContext(ShoppingCartContext)
+  ....
+
+  return (
+    <nav className='flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light'>
+      <ul className='flex items-center gap-3'>
+        ....
+        <li>
+          <NavLink
+            to='/'
+            onClick={() => context.setSearchByCategory()}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            All
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/clothes'
+            onClick={() => context.setSearchByCategory('clothes')}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Clothes
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/electronics'
+            onClick={() => context.setSearchByCategory('electronics')}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Electronics
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/furnitures'
+            onClick={() => context.setSearchByCategory('furnitures')}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Furnitures
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/toys'
+            onClick={() => context.setSearchByCategory('toys')}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Toys
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to='/others'
+            onClick={() => context.setSearchByCategory('others')}
+            className={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }>
+            Others
+          </NavLink>
+        </li>
+      </ul>
+      ....
+    </nav>
+  )
+}
+
+export default Navbar
+```
+
+3. En Context/index.jsx
+
+```jsx
+.... 
+
+export const ShoppingCartProvider = ({children}) => {
+  // Get products by category
+  const [searchByCategory, setSearchByCategory] = useState(null)
+
+  ....
+
+  const filteredItemsByCategory = (items, searchByCategory) => {
+    return items?.filter(item => item.category.name.toLowerCase().includes(searchByCategory.toLowerCase()))
+  }
+
+  const filterBy = (searchType, items, searchByTitle, searchByCategory) => {
+    if (searchType === 'BY_TITLE') {
+      return filteredItemsByTitle(items, searchByTitle)
+    }
+
+    if (searchType === 'BY_CATEGORY') {
+      return filteredItemsByCategory(items, searchByCategory)
+    }
+
+    if (searchType === 'BY_TITLE_AND_CATEGORY') {
+      return filteredItemsByCategory(items, searchByCategory).filter(item => item.title.toLowerCase().includes(searchByTitle.toLowerCase()))
+    }
+
+    if (!searchType) {
+      return items
+    }
+  }
+
+  useEffect(() => {
+    if (searchByTitle && searchByCategory) setFilteredItems(filterBy('BY_TITLE_AND_CATEGORY', items, searchByTitle, searchByCategory))
+    if (searchByTitle && !searchByCategory) setFilteredItems(filterBy('BY_TITLE', items, searchByTitle, searchByCategory))
+    if (!searchByTitle && searchByCategory) setFilteredItems(filterBy('BY_CATEGORY', items, searchByTitle, searchByCategory))
+    if (!searchByTitle && !searchByCategory) setFilteredItems(filterBy(null, items, searchByTitle, searchByCategory))
+  }, [items, searchByTitle, searchByCategory])
+
+  return (
+    <ShoppingCartContext.Provider value={{
+      ....
+      filteredItems,
+      searchByCategory,
+      setSearchByCategory
+    }}>
+      {children}
+    </ShoppingCartContext.Provider>
+  )
+}
+```
+
+### Corrigiendo algunos bugs
+1. En Home
+  
+```jsx
+....
+
+function Home() {
+....
+  const renderView = () => {
+    if (context.filteredItems?.length > 0) {
+      return (
+        context.filteredItems?.map(item => (
+          <Card key={item.id} data={item} />
+        ))
+      )
+    } else {
+      return (
+        <div>We don't have anything :(</div>
+      )
+    }
+  }
+  ....
+}
+
+export default Home
+```
+
+2. CheckoutSideMenu/index.jsx
+
+```jsx
+....
+
+const CheckoutSideMenu = () => {
+  const context = useContext(ShoppingCartContext)
+
+  ....
+
+  const handleCheckout = () => {
+    const orderToAdd = {
+      date: '01.02.23',
+      products: context.cartProducts,
+      totalProducts: context.cartProducts.length,
+      totalPrice: totalPrice(context.cartProducts)
+    }
+
+    context.setOrder([...context.order, orderToAdd])
+    context.setCartProducts([])
+    context.setSearchByTitle(null)
+  }
+
+  return (
+    ....
+  )
+}
+
+export default CheckoutSideMenu
+```
+
+### Deploy de React en Netlify
+1. [Documentacion](https://vitejs.dev/guide/static-deploy.html)
+2. [Netlify Get Started](https://docs.netlify.com/cli/get-started/)
+
+
+
+
+
+
+
+
+## Enlaces de interes
 1. [Google Fonts](https://fonts.google.com/)
 2. [Repositorio Aplicacion ToDos](https://github.com/platzi/curso-react-intro)
 3. [Figma Aplicacion ToDos](https://www.figma.com/file/3aZkIjXMEzBDACmWxqUVes/TODO-Machine-Mockup?node-id=0%3A1&mode=dev)
 4. [Figma 2 Aplicacion ToDos](https://www.figma.com/proto/3aZkIjXMEzBDACmWxqUVes/TODO-Machine-Mockup?type=design&amp%3Bnode-id=1-3&amp%3Bt=NH0HT6nS2TxaLKp4-1&amp%3Bscaling=min-zoom&amp%3Bpage-id=0%3A1&amp%3Bstarting-point-node-id=1%3A3&amp%3Bmode=design&node-id=1-3&starting-point-node-id=1%3A3)
 5. [Reppositorio Aplicacion Platzi Travel](https://github.com/platzi/PlatziTravel/tree/main)
-
-5. [Repositorio Tienda en linea con React](https://github.com/platzi/curso-react-practico/tree/master)
+6. [Repositorio Tienda en linea con React](https://github.com/platzi/curso-react-practico/tree/master)
