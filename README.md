@@ -99,6 +99,22 @@
   - [Props en TypeScript](#props-en-typescript)
   - [State con tipos primitivos](#state-con-tipos-primitivos)
   - [Tipos para eventos y callback de escuchadores](#tipos-para-eventos-y-callback-de-escuchadores)
+- [React Native](#react-native)
+  - [Introduccion](#introduccion)
+    - [Instalacion del CLI de React Native Expo](#instalacion-del-cli-de-react-native-expo)
+    - [Instalacion de Android Studio para utilizar los emuladores](#instalacion-de-android-studio-para-utilizar-los-emuladores)
+    - [Pruebas en un dispositivo fisico](#pruebas-en-un-dispositivo-fisico)
+  - [Estructura de un proyecto](#estructura-de-un-proyecto)
+  - [Creacion de componentes](#creacion-de-componentes)
+  - [Propiedades entre componentes](#propiedades-entre-componentes)
+    - [Propiedades por defecto](#propiedades-por-defecto)
+    - [Prop Types](#prop-types)
+  - [Instalando y configurando React Navigation](#instalando-y-configurando-react-navigation)
+    - [Stack de navegacion](#stack-de-navegacion)
+    - [Tab Navigation y SafeAreaView](#tab-navigation-y-safeareaview)
+    - [Drawer Navigation](#drawer-navigation)
+  - [Proyecto de Modulo](#proyecto-de-modulo)
+    - [Configuracion de React Navigation](#configuracion-de-react-navigation)
   - [Enlaces de interes](#enlaces-de-interes)
 
 ## ReactJS
@@ -2557,6 +2573,7 @@ Agregar una animacion a las card
 ```
 
 ## Creando la navbar
+
 ```html
 <nav class="w-full h-14 hidden bg-white lg:flex p-4 justify-between">
       <div class="h-auto w-auto">
@@ -2572,7 +2589,7 @@ Agregar una animacion a las card
       <div class="flex space-x-4">
           <svg width="20" height="20" ... /></svg>
           <svg width="20" height="20" .../></svg>
-          <svg width="20" height="20" .../></svg>      
+          <svg width="20" height="20" .../></svg>
       </div>
   </nav>
 
@@ -2595,29 +2612,33 @@ Agregar una animacion a las card
 ```
 
 ## Agregando el dark mode
+
 [Documentacion](https://tailwindcss.com/docs/dark-mode)
 
 ## Preparando para produccion
+
 [Documentacion](https://tailwindcss.com/docs/optimizing-for-production)
 
 ## Migrar desde tailwindcss 2.x a 3.x
+
 [Documentacion](https://tailwindcss.com/docs/upgrade-guide#configure-content-sources)
 
+## Instalacion de React con Vite y TailwindCSS
 
-## Instalacion de React con Vite y TailwindCSS 
+### Que es Vite
 
-### Que es Vite 
 Vite es un nuevo compilador de código abierto que sirve para crear aplicaciones web
 modernas con React, Vue, Svelte, Preact y TypeScript. Vite se centra en el
 tiempo de compilación y el tiempo de ejecución rápido. No es un marco
 completo, sino más bien un compilador de desarrollo que aprovecha las
 importaciones nativas de ES Module para lograr un tiempo de compilación rápido
-y un servidor de desarrollo instantáneo con recarga rápida. 
+y un servidor de desarrollo instantáneo con recarga rápida.
 
-### Crear un proyecto con Vite 
-Para crear un proyecto con Vite, debemos tener instalado Node.js y npm. Luego, abrimos una terminal y ejecutamos el siguiente comando: 
+### Crear un proyecto con Vite
 
-```bash 
+Para crear un proyecto con Vite, debemos tener instalado Node.js y npm. Luego, abrimos una terminal y ejecutamos el siguiente comando:
+
+```bash
 npm create vite@latest
 ```
 
@@ -2642,24 +2663,25 @@ export default App;
 ```
 
 ### Proyecto del modulo
+
 En este modulo de React con vite y tailwind, vamos a construir una tienda en linea. Para empezar, se realiza un analisis de rutas y componentes en React.
 
-En este proyecto vamos a manejar la siguiente estructura de archivos. 
+En este proyecto vamos a manejar la siguiente estructura de archivos.
 
 1. Se va crear una carpeta **Pages** donde se van a crear las paginas de la aplicacion. Estas paginas son App,Home, MyOrders, MyAccount, SingIn, MyOrder, NotFound.
 
-*En la carpeta App debes trasladar todos los archivos referentes a App. Ten cuidadop porque debes modificcar las importaciones en el archivo main.jsx*
+_En la carpeta App debes trasladar todos los archivos referentes a App. Ten cuidadop porque debes modificcar las importaciones en el archivo main.jsx_
 
 Despues de crear las paginas debes importarlas en el archivo App/index.jsx
 
 ```jsx
-import Home from '../Home'
-import MyAccount from '../MyAccount'
-import MyOrder from '../MyOrder'
-import MyOrders from '../MyOrders'
-import NotFound from '../NotFound'
-import SignIn from '../SignIn'
-import './App.css'
+import Home from "../Home";
+import MyAccount from "../MyAccount";
+import MyOrder from "../MyOrder";
+import MyOrders from "../MyOrders";
+import NotFound from "../NotFound";
+import SignIn from "../SignIn";
+import "./App.css";
 
 const App = () => {
   return (
@@ -2671,13 +2693,14 @@ const App = () => {
       <NotFound />
       <SignIn />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
 ```
 
 ### Enrutamiento con React Router Dom
+
 1. Instalar react router dom
 
 ```bash
@@ -2715,140 +2738,127 @@ export default App
 ```
 
 ### Componente NavBar
+
 1. Crear carpeta components y dentro de ella crear la carpeta NavBar/index.jsx
 2. Componente [NavLink](https://reactrouter.com/en/main/components/nav-link)
 
 **Explicacion de algunas partes del codigo**
+
 ```jsx
 <NavLink
-  to='/'
-  className={({ isActive }) =>
-    isActive ? activeStyle : undefined
-  }>
+  to="/"
+  className={({ isActive }) => (isActive ? activeStyle : undefined)}
+>
   All
 </NavLink>
 ```
 
-NavLink es un componente que nos permite crear links en nuestra aplicacion. El atributo `to` es el destino del link.  El atributo isActive es una funcion que nos permite agregar estilos cuando el link esta activo.
+NavLink es un componente que nos permite crear links en nuestra aplicacion. El atributo `to` es el destino del link. El atributo isActive es una funcion que nos permite agregar estilos cuando el link esta activo.
 
 **Clases nuevas de Tailwind**
-- *Gap*: Nos permite agregar un espacio entre los elementos de un contenedor.
+
+- _Gap_: Nos permite agregar un espacio entre los elementos de un contenedor.
 
 [Documentacion](https://tailwindcss.com/docs/gap)
 
-- *underline*: Nos permite agregar una linea debajo del texto.
+- _underline_: Nos permite agregar una linea debajo del texto.
 
-- *underline-offset*: Nos permite agregar un espacio entre el texto y la linea.
+- _underline-offset_: Nos permite agregar un espacio entre el texto y la linea.
 
 ```jsx
-import { NavLink } from 'react-router-dom'
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
-  const activeStyle = 'underline underline-offset-4' // Estilo para cuando el link esta activo
+  const activeStyle = "underline underline-offset-4"; // Estilo para cuando el link esta activo
 
   return (
-    <nav className='flex justify-between items-center fixed z-10 w-full py-5 px-8 text-sm font-light'>
-      <ul className='flex items-center gap-3'>
-        <li className='font-semibold text-lg'>
-          <NavLink to='/'>
-            Shopi
-          </NavLink>
+    <nav className="flex justify-between items-center fixed z-10 w-full py-5 px-8 text-sm font-light">
+      <ul className="flex items-center gap-3">
+        <li className="font-semibold text-lg">
+          <NavLink to="/">Shopi</NavLink>
         </li>
         <li>
           <NavLink
-            to='/'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             All
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/clothes'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/clothes"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Clothes
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/electronics'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/electronics"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Electronics
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/furnitures'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/furnitures"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Furnitures
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/toys'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/toys"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Toys
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/others'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/others"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Others
           </NavLink>
         </li>
       </ul>
-      <ul className='flex items-center gap-3'>
-        <li className='text-black/60'>
-          teff@platzi.com
-        </li>
+      <ul className="flex items-center gap-3">
+        <li className="text-black/60">teff@platzi.com</li>
         <li>
           <NavLink
-            to='/my-orders'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/my-orders"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             My Orders
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/my-account'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/my-account"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             My Account
           </NavLink>
         </li>
         <li>
           <NavLink
-            to='/sing-in'
-            className={({ isActive }) =>
-              isActive ? activeStyle : undefined
-            }>
+            to="/sing-in"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
             Sign In
           </NavLink>
         </li>
-        <li>
-          🛒 0
-        </li>
+        <li>🛒 0</li>
       </ul>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
 ```
 
 1. En App/index.jsx
@@ -2884,150 +2894,152 @@ export default App
 ```
 
 ### Componente Layout
+
 1. Crear carpeta Layout y dentro de ella crear el archivo index.jsx
 2. En el archivo index.jsx
 
 ```jsx
 const Layout = ({ children }) => {
-  return (
-    <div className='flex flex-col items-center mt-20'>
-      {children}
-    </div>
-  )
-}
+  return <div className="flex flex-col items-center mt-20">{children}</div>;
+};
 
-export default Layout
+export default Layout;
 ```
 
 3. En Home/index.jsx
 
 ```jsx
-import Layout from '../../Components/Layout'
+import Layout from "../../Components/Layout";
 
 function Home() {
-  return (
-    <Layout>
-      Home
-    </Layout>
-  )
+  return <Layout>Home</Layout>;
 }
 
-export default Home
+export default Home;
 ```
 
 4. Replicar lo mismo en las demas paginas.
 
 ### Componente Card
+
 1. Crear carpeta Components/Card y dentro de ella crear el archivo index.jsx
 
 **Clases de tailwind nuevas**
-- *cursor-pointer*: Nos permite cambiar el cursor del mouse cuando pasamos por encima de un elemento.
-- *object-cover*: Nos permite ajustar la imagen al tamaño del contenedor. [Documentacion](https://tailwindcss.com/docs/object-fit#basic-usage)
+
+- _cursor-pointer_: Nos permite cambiar el cursor del mouse cuando pasamos por encima de un elemento.
+- _object-cover_: Nos permite ajustar la imagen al tamaño del contenedor. [Documentacion](https://tailwindcss.com/docs/object-fit#basic-usage)
 
 ```jsx
 const Card = () => {
   return (
-    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
-      <figure className='relative mb-2 w-full h-4/5'>
-        <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>Electronics</span>
-        <img className='w-full h-full object-cover rounded-lg' src='https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' alt='headphones' />
-        <div className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'>
+    <div className="bg-white cursor-pointer w-56 h-60 rounded-lg">
+      <figure className="relative mb-2 w-full h-4/5">
+        <span className="absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5">
+          Electronics
+        </span>
+        <img
+          className="w-full h-full object-cover rounded-lg"
+          src="https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          alt="headphones"
+        />
+        <div className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1">
           +
         </div>
       </figure>
-      <p className='flex justify-between'>
-        <span className='text-sm font-light'>Headphones</span>
-        <span className='text-lg font-medium'>$300</span>
+      <p className="flex justify-between">
+        <span className="text-sm font-light">Headphones</span>
+        <span className="text-lg font-medium">$300</span>
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
 ```
 
 ### Consumiendo una API
+
 [API](https://fakeapi.platzi.com/)
 
 1. En Home/index.jsx
 
 **Explicacion de algunas partes del codigo**
-- *fetch*: Nos permite hacer peticiones a una API.La estructura de la peticion es la siguiente:
+
+- _fetch_: Nos permite hacer peticiones a una API.La estructura de la peticion es la siguiente:
 
 ```jsx
-fetch('url de la api')
-  .then(response => response.json())
-  .then(data => console.log(data))
+fetch("url de la api")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
 ```
 
 o tambien puedes hacerlo de la siguiente manera:
 
 ```jsx
-const response = await fetch('url de la api')
-const data = await response.json()
-console.log(data)
+const response = await fetch("url de la api");
+const data = await response.json();
+console.log(data);
 ```
-- *map*: Nos permite recorrer un arreglo y retornar un nuevo arreglo con los elementos que necesitamos. La estructura es la siguiente:
+
+- _map_: Nos permite recorrer un arreglo y retornar un nuevo arreglo con los elementos que necesitamos. La estructura es la siguiente:
 
 ```jsx
-const array = [1,2,3,4,5]
-const newArray = array.map(item => item * 2)
-console.log(newArray) // [2,4,6,8,10]
+const array = [1, 2, 3, 4, 5];
+const newArray = array.map((item) => item * 2);
+console.log(newArray); // [2,4,6,8,10]
 ```
 
 En este caso, vamos a recorrer los items, si estos existen. Vamos a crear un componente Card por cada item que se tenga (React nos dice que por cada elementos debemos tener un id).
 
-*Cuando trabajamos con lambda function podemos tener un return de dos maneras: la primera es cuando tenemos una sola linea de codigo y la segunda es cuando tenemos mas de una linea de codigo.*
+_Cuando trabajamos con lambda function podemos tener un return de dos maneras: la primera es cuando tenemos una sola linea de codigo y la segunda es cuando tenemos mas de una linea de codigo._
 
 ```jsx
-const array = [1,2,3,4,5]
-const newArray = array.map(item => item * 2)
-console.log(newArray) // [2,4,6,8,10]
+const array = [1, 2, 3, 4, 5];
+const newArray = array.map((item) => item * 2);
+console.log(newArray); // [2,4,6,8,10]
 ```
 
 ```jsx
-const array = [1,2,3,4,5]
-const newArray = array.map(item => {
-  const newItem = item * 2
-  return newItem
-})
-console.log(newArray) // [2,4,6,8,10]
+const array = [1, 2, 3, 4, 5];
+const newArray = array.map((item) => {
+  const newItem = item * 2;
+  return newItem;
+});
+console.log(newArray); // [2,4,6,8,10]
 ```
 
 **Clases de tailwind nuevas**
-- *grid-col*: Nos permite definir el numero de columnas que va a tener un contenedor. [Documentacion](https://tailwindcss.com/docs/grid-template-columns)
+
+- _grid-col_: Nos permite definir el numero de columnas que va a tener un contenedor. [Documentacion](https://tailwindcss.com/docs/grid-template-columns)
 - max-w-screen-lg: Nos permite definir el ancho maximo de un contenedor. [Documentacion](https://tailwindcss.com/docs/max-width)
 
-
 ```jsx
-import { useState, useEffect } from 'react'
-import Layout from '../../Components/Layout'
-import Card from '../../Components/Card'
+import { useState, useEffect } from "react";
+import Layout from "../../Components/Layout";
+import Card from "../../Components/Card";
 
 const Home = () => {
-  const [items, setItems] = useState(null)
+  const [items, setItems] = useState(null);
 
   useEffect(() => {
-    fetch('https://api.escuelajs.co/api/v1/products')
-      .then(response => response.json())
-      .then(data => setItems(data))
-  }, [])
+    fetch("https://api.escuelajs.co/api/v1/products")
+      .then((response) => response.json())
+      .then((data) => setItems(data));
+  }, []);
 
   return (
     <Layout>
       Home
-      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg'>
-        {
-          items?.map(item => (
-            <Card key={item.id} data={item} />
-          ))
-        }
+      <div className="grid gap-4 grid-cols-4 w-full max-w-screen-lg">
+        {items?.map((item) => (
+          <Card key={item.id} data={item} />
+        ))}
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 ```
 
 2. En Card/index.jsx
@@ -3035,42 +3047,47 @@ export default Home
 ```jsx
 const Card = (data) => {
   return (
-    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
-      <figure className='relative mb-2 w-full h-4/5'>
-        <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>{data.data.category.name}</span>
-        <img className='w-full h-full object-cover rounded-lg' src={data.data.images[0]} alt={data.data.title} />
-        <div className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'>
+    <div className="bg-white cursor-pointer w-56 h-60 rounded-lg">
+      <figure className="relative mb-2 w-full h-4/5">
+        <span className="absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5">
+          {data.data.category.name}
+        </span>
+        <img
+          className="w-full h-full object-cover rounded-lg"
+          src={data.data.images[0]}
+          alt={data.data.title}
+        />
+        <div className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1">
           +
         </div>
       </figure>
-      <p className='flex justify-between'>
-        <span className='text-sm font-light'>{data.data.title}</span>
-        <span className='text-lg font-medium'>${data.data.price}</span>
+      <p className="flex justify-between">
+        <span className="text-sm font-light">{data.data.title}</span>
+        <span className="text-lg font-medium">${data.data.price}</span>
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
 ```
 
 ### Contexto global de la aplicacion
+
 1. Crear la carpeta src/Context y dentro de ella crear el archivo index.jsx
 
 **Explicacion de algunas partes del codigo**
 
 ```jsx
-import { createContext } from 'react'
+import { createContext } from "react";
 
-const ShoppingCartContext = createContext()
+const ShoppingCartContext = createContext();
 
-export const ShoppingCartProvider = ({children}) => {
+export const ShoppingCartProvider = ({ children }) => {
   return (
-    <ShoppingCartContext.Provider>
-      {children}
-    </ShoppingCartContext.Provider>
-  )
-}
+    <ShoppingCartContext.Provider>{children}</ShoppingCartContext.Provider>
+  );
+};
 ```
 
 2. En App/index.jsx
@@ -3095,50 +3112,54 @@ export default App
 ```
 
 ### Contador de productos en el carrito
+
 1. En Context/index.jsx
 
 ```jsx
-import { createContext, useState } from 'react'
+import { createContext, useState } from "react";
 
-export const ShoppingCartContext = createContext()
+export const ShoppingCartContext = createContext();
 
-export const ShoppingCartProvider = ({children}) => {
-  const [count, setCount] = useState(0)
+export const ShoppingCartProvider = ({ children }) => {
+  const [count, setCount] = useState(0);
 
   return (
-    <ShoppingCartContext.Provider value={{
-      count,
-      setCount
-    }}>
+    <ShoppingCartContext.Provider
+      value={{
+        count,
+        setCount,
+      }}
+    >
       {children}
     </ShoppingCartContext.Provider>
-  )
-}
+  );
+};
 ```
 
 2. En Card/index.jsx
 
 ```jsx
-import { useContext } from 'react'
-import { ShoppingCartContext } from '../../Context'
+import { useContext } from "react";
+import { ShoppingCartContext } from "../../Context";
 
 const Card = (data) => {
-  const context = useContext(ShoppingCartContext)
+  const context = useContext(ShoppingCartContext);
 
   return (
-    <div className='bg-white cursor-pointer w-56 h-60 rounded-lg'>
-        ....
-        <div
-          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
-          onClick={() => context.setCount(context.count + 1)}>
-          +
-        </div>
+    <div className="bg-white cursor-pointer w-56 h-60 rounded-lg">
+      ....
+      <div
+        className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1"
+        onClick={() => context.setCount(context.count + 1)}
+      >
+        +
+      </div>
       ....
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
 ```
 
 3. En Navbar/index.jsx
@@ -3169,16 +3190,19 @@ export default Navbar
 ```
 
 ### Abriendo el detalle de cada producto
+
 #### Maquetacion e iconos
+
 1. Crear Componets/ProductDetail y dentro de ella crear el archivo index.jsx
 
 **Explicacion de algunas partes del codigo**
-- *aside*: Nos permite crear un contenedor que se va a ubicar en el lado derecho de la pantalla.
-- *height: calc(100vh - 68px)*: Nos permite definir el alto del contenedor. En este caso, el alto va a ser el 100% de la pantalla menos 68px. 68px corresponde al alto de la barra de navegacion. Esta funcionalidad permite que no haya un scroll en la pagina.
+
+- _aside_: Nos permite crear un contenedor que se va a ubicar en el lado derecho de la pantalla.
+- _height: calc(100vh - 68px)_: Nos permite definir el alto del contenedor. En este caso, el alto va a ser el 100% de la pantalla menos 68px. 68px corresponde al alto de la barra de navegacion. Esta funcionalidad permite que no haya un scroll en la pagina.
 
 **Clases nuevas de tailwind**
 
-*Puedes utilizar clases de CSS junto con Tailwind*
+_Puedes utilizar clases de CSS junto con Tailwind_
 
 2. Crear ProductDetail/styles.css
 
@@ -3193,23 +3217,23 @@ export default Navbar
 3. Puedes utilizar la libreria heroicons para agregar iconos a tu aplicacion. [Documentacion](https://heroicons.com/)
 
 ```jsx
-import { XMarkIcon } from '@heroicons/react/24/solid'
-import './styles.css'
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import "./styles.css";
 
 const ProductDetail = () => {
   return (
-    <aside className='product-detail flex flex-col fixed right-0 border border-black rounded-lg bg-white'>
-      <div className='flex justify-between items-center p-6'>
-        <h2 className='font-medium text-xl'>Detail</h2>
+    <aside className="product-detail flex flex-col fixed right-0 border border-black rounded-lg bg-white">
+      <div className="flex justify-between items-center p-6">
+        <h2 className="font-medium text-xl">Detail</h2>
         <div>
-          <XMarkIcon className='h-6 w-6 text-black'></XMarkIcon>
+          <XMarkIcon className="h-6 w-6 text-black"></XMarkIcon>
         </div>
       </div>
     </aside>
-  )
-}
+  );
+};
 
-export default ProductDetail
+export default ProductDetail;
 ```
 
 3. En Home/index.jsx
@@ -3292,6 +3316,7 @@ export default Card
 ```
 
 #### Logica del componente
+
 1. En Context/index.jsx
 
 ```jsx
@@ -3331,7 +3356,7 @@ export const ShoppingCartProvider = ({children}) => {
 ....
 
 const Card = (data) => {
-.... 
+....
 
   const showProduct = (productDetail) => {
     context.openProductDetail()
@@ -3389,6 +3414,7 @@ export default ProductDetail
 ```
 
 ### Agregando el carrito de compras
+
 1. Vamos a crear la funcionalidad de llevar productos a un carrito de compras
 
 En Context/index.jsx
@@ -3456,33 +3482,38 @@ export default Card
 ```
 
 #### SlideMenu del carrito de compras
+
 1. En Components/SlideMenu y dentro de ella crear el archivo index.jsx
 
 ```jsx
-import { useContext } from 'react'
-import { XMarkIcon } from '@heroicons/react/24/solid'
-import { ShoppingCartContext } from '../../Context'
-import './styles.css'
+import { useContext } from "react";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { ShoppingCartContext } from "../../Context";
+import "./styles.css";
 
 const CheckoutSideMenu = () => {
-  const context = useContext(ShoppingCartContext)
+  const context = useContext(ShoppingCartContext);
 
   return (
     <aside
-      className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
-      <div className='flex justify-between items-center p-6'>
-        <h2 className='font-medium text-xl'>My Order</h2>
+      className={`${
+        context.isCheckoutSideMenuOpen ? "flex" : "hidden"
+      } checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}
+    >
+      <div className="flex justify-between items-center p-6">
+        <h2 className="font-medium text-xl">My Order</h2>
         <div>
           <XMarkIcon
-            className='h-6 w-6 text-black cursor-pointer'
-            onClick={() => context.closeCheckoutSideMenu()}></XMarkIcon>
+            className="h-6 w-6 text-black cursor-pointer"
+            onClick={() => context.closeCheckoutSideMenu()}
+          ></XMarkIcon>
         </div>
       </div>
     </aside>
-  )
-}
+  );
+};
 
-export default CheckoutSideMenu
+export default CheckoutSideMenu;
 ```
 
 2. en SlideMenu/styles.css
@@ -3555,31 +3586,36 @@ export default App
 ```
 
 #### Componente OrderCard
+
 1. En Components/OrderCard y dentro de ella crear el archivo index.jsx
 
 ```jsx
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
-const OrderCard = props => {
-  const { title, imageUrl, price } = props
+const OrderCard = (props) => {
+  const { title, imageUrl, price } = props;
 
   return (
     <div className="flex justify-between items-center mb-3">
-      <div className='flex items-center gap-2'>
-        <figure className='w-20 h-20'>
-          <img className='w-full h-full rounded-lg object-cover' src={imageUrl} alt={title} />
+      <div className="flex items-center gap-2">
+        <figure className="w-20 h-20">
+          <img
+            className="w-full h-full rounded-lg object-cover"
+            src={imageUrl}
+            alt={title}
+          />
         </figure>
-        <p className='text-sm font-light'>{title}</p>
+        <p className="text-sm font-light">{title}</p>
       </div>
-      <div className='flex items-center gap-2'>
-        <p className='text-lg font-medium'>{price}</p>
-        <XMarkIcon className='h-6 w-6 text-black cursor-pointer'></XMarkIcon>
+      <div className="flex items-center gap-2">
+        <p className="text-lg font-medium">{price}</p>
+        <XMarkIcon className="h-6 w-6 text-black cursor-pointer"></XMarkIcon>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OrderCard
+export default OrderCard;
 ```
 
 2. En CheckoutSideMenu/index.jsx
@@ -3667,6 +3703,7 @@ export default Card
 ```
 
 #### Eliminar productos del carrito
+
 1. En Components/OrderCard/index.jsx
 
 ```jsx
@@ -3727,6 +3764,7 @@ export default CheckoutSideMenu
 ```
 
 #### Total de la compra
+
 1. En utils/index.js
 
 ```js
@@ -3736,12 +3774,12 @@ export default CheckoutSideMenu
  * @returns {numer} Total price
  */
 
-// Lo anterior es un comentario de la funcion 
+// Lo anterior es un comentario de la funcion
 export const totalPrice = (products) => {
-  let sum = 0
-  products.forEach(product => sum += product.price)
-  return sum
-}
+  let sum = 0;
+  products.forEach((product) => (sum += product.price));
+  return sum;
+};
 ```
 
 2. En CheckoutSideMenu/index.jsx
@@ -3757,7 +3795,7 @@ const CheckoutSideMenu = () => {
   return (
     <aside
       className={`${context.isCheckoutSideMenuOpen ? 'flex' : 'hidden'} checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}>
-      
+
       <div className='px-6'>
         <p className='flex justify-between items-center'>
           <span className='font-light'>Total:</span>
@@ -3772,8 +3810,9 @@ export default CheckoutSideMenu
 ```
 
 ### Pagina MyOrders
+
 1. En Context/index.jsx
-  
+
 ```jsx
 ....
 
@@ -3794,7 +3833,7 @@ export const ShoppingCartProvider = ({children}) => {
 ```
 
 2. En CheckoutSideMenu/index.jsx
-  
+
 ```jsx
 import {Link} from 'react-router-dom'
 ....
@@ -3873,35 +3912,33 @@ export default App
 4. En MyOrder/index.jsx
 
 ```jsx
-import { useContext } from 'react'
-import { ShoppingCartContext } from '../../Context'
-import Layout from '../../Components/Layout'
-import OrderCard from '../../Components/OrderCard'
+import { useContext } from "react";
+import { ShoppingCartContext } from "../../Context";
+import Layout from "../../Components/Layout";
+import OrderCard from "../../Components/OrderCard";
 
 function MyOrder() {
-  const context = useContext(ShoppingCartContext)
+  const context = useContext(ShoppingCartContext);
 
   return (
     <Layout>
       MyOrder
-      <div className='flex flex-col w-80'>
-        {
-          context.order?.slice(-1)[0].products.map(product => (
-            <OrderCard
-              key={product.id}
-              id={product.id}
-              title={product.title}
-              imageUrl={product.images}
-              price={product.price}
-            />
-          ))
-        }
+      <div className="flex flex-col w-80">
+        {context.order?.slice(-1)[0].products.map((product) => (
+          <OrderCard
+            key={product.id}
+            id={product.id}
+            title={product.title}
+            imageUrl={product.images}
+            price={product.price}
+          />
+        ))}
       </div>
     </Layout>
-  )
+  );
 }
 
-export default MyOrder
+export default MyOrder;
 ```
 
 5. En OrderCard/index.jsx
@@ -3932,13 +3969,14 @@ export default OrderCard
 ```
 
 ### Pagina MyOrders
+
 1. En Components/OrdersCard/index.jsx
 
 ```jsx
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
-const OrdersCard = props => {
-  const { totalPrice, totalProducts } = props
+const OrdersCard = (props) => {
+  const { totalPrice, totalProducts } = props;
 
   return (
     <div className="flex justify-between items-center mb-3 border border-black">
@@ -3948,43 +3986,42 @@ const OrdersCard = props => {
         <span>{totalPrice}</span>
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default OrdersCard
+export default OrdersCard;
 ```
 
 2. En Pages/MyOrders/index.jsx
 
 ```jsx
-import { useContext } from 'react'
-import { Link } from 'react-router-dom'
-import Layout from '../../Components/Layout'
-import { ShoppingCartContext } from '../../Context'
-import OrdersCard from '../../Components/OrdersCard'
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import Layout from "../../Components/Layout";
+import { ShoppingCartContext } from "../../Context";
+import OrdersCard from "../../Components/OrdersCard";
 
 function MyOrders() {
-  const context = useContext(ShoppingCartContext)
+  const context = useContext(ShoppingCartContext);
 
   return (
     <Layout>
-      <div className='flex items-center justify-center relative w-80'>
+      <div className="flex items-center justify-center relative w-80">
         <h1>My Orders</h1>
       </div>
-      {
-        context.order.map((order, index) => (
-          <Link key={index} to={`/my-orders/${index}`}>
-            <OrdersCard
-              totalPrice={order.totalPrice}
-              totalProducts={order.totalProducts} />
-          </Link>
-        ))
-      }
+      {context.order.map((order, index) => (
+        <Link key={index} to={`/my-orders/${index}`}>
+          <OrdersCard
+            totalPrice={order.totalPrice}
+            totalProducts={order.totalProducts}
+          />
+        </Link>
+      ))}
     </Layout>
-  )
+  );
 }
 
-export default MyOrders
+export default MyOrders;
 ```
 
 3. En Pages/MyOrder/index.jsx
@@ -4094,6 +4131,7 @@ export default OrdersCard
 ```
 
 ### Buscados de productos
+
 1. En Context/index.jsx
 
 ```jsx
@@ -4199,7 +4237,7 @@ export const ShoppingCartProvider = ({children}) => {
 3. En Home/index.jsx
 
 ```jsx
-.... 
+....
 
 function Home() {
   ....
@@ -4241,6 +4279,7 @@ export default Home
 ```
 
 ### Filtrando por categorias
+
 1. En App/index.jsx
 
 ```jsx
@@ -4347,7 +4386,7 @@ export default Navbar
 3. En Context/index.jsx
 
 ```jsx
-.... 
+....
 
 export const ShoppingCartProvider = ({children}) => {
   // Get products by category
@@ -4398,8 +4437,9 @@ export const ShoppingCartProvider = ({children}) => {
 ```
 
 ### Corrigiendo algunos bugs
+
 1. En Home
-  
+
 ```jsx
 ....
 
@@ -4456,6 +4496,7 @@ export default CheckoutSideMenu
 ```
 
 ### Deploy de React en Netlify
+
 1. [Documentacion](https://vitejs.dev/guide/static-deploy.html)
 2. [Netlify Get Started](https://docs.netlify.com/cli/get-started/)
 
@@ -4477,6 +4518,7 @@ Es una buena practica al trabajar con TypeScript, tener un archivo de configurac
 ```
 
 ## Creando una app con React y TypeScript
+
 Para este modulo vamos a utilizar next.js, que es un framework de React que nos permite crear aplicaciones con React y TypeScript de una manera muy sencilla.
 
 [Documentacion](https://nextjs.org/docs/getting-started/installation)
@@ -4492,7 +4534,9 @@ Puedes correr el servidor de desarrollo con el siguiente comando:
 ```bash
 npm run dev
 ```
+
 Paso a paso de esta clase
+
 1. En tsconfig.json
 
 ```json
@@ -4521,41 +4565,45 @@ Paso a paso de esta clase
 ```
 
 3. Limpiar proyecto
+
    1. Limpair el archivo pages/index.tsx
-    ```jsx
-    import Head from 'next/head'
-    import type { NextPage } from 'next'
 
-    const Home: NextPage = () => {
-      return (
-        <div>
-          <Head>
-            <title>Create Next App</title>
-            <meta name="description" content="Generated by create next app" />
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
+   ```jsx
+   import Head from "next/head";
+   import type { NextPage } from "next";
 
-          <main>
-            <h1> Hello World </h1>
-          </main>
+   const Home: NextPage = () => {
+     return (
+       <div>
+         <Head>
+           <title>Create Next App</title>
+           <meta name="description" content="Generated by create next app" />
+           <link rel="icon" href="/favicon.ico" />
+         </Head>
 
-          <footer>
-          </footer>
-        </div>
-      )
-    }
+         <main>
+           <h1> Hello World </h1>
+         </main>
 
-    export default Home
-    ```
-    2. Eliminar carpeta api
-    3. En los styles solo dejar el archivo globals.css completamente vacio
+         <footer></footer>
+       </div>
+     );
+   };
+
+   export default Home;
+   ```
+
+   2. Eliminar carpeta api
+   3. En los styles solo dejar el archivo globals.css completamente vacio
+
 4. Instala tailwind con Next. Apoyate en la documentacion.
 
 ## Diferentes formas de definir un componente.
+
 **Formas de definir un componente con TypeScript**
 
 ```tsx
-import type { FunctionComponent, FC } from 'react'
+import type { FunctionComponent, FC } from "react";
 
 // export const RandomFox = () => {
 //   return (
@@ -4565,14 +4613,12 @@ import type { FunctionComponent, FC } from 'react'
 
 // Generar un numero aleatorio entre 1 y 122
 
-const random = () => Math.floor(Math.random() * 122) + 1
+const random = () => Math.floor(Math.random() * 122) + 1;
 
 export const RandomFox: JSX.Element = () => {
-  const image: string = `ruta de la imagen/${random()}.jpg}`
-  return (
-    <img src={image}/>
-  )
-}
+  const image: string = `ruta de la imagen/${random()}.jpg}`;
+  return <img src={image} />;
+};
 
 // export const RandomFox: FunctionComponent = () => {
 //   return (
@@ -4590,85 +4636,76 @@ export const RandomFox: JSX.Element = () => {
 ## Props en TypeScript
 
 ```tsx
-export const RandomFox: JSX.Element = (
-  props: { image: string }
-) => {
-  return (
-    <img src={props.image}/>
-  )
-}
+export const RandomFox: JSX.Element = (props: { image: string }) => {
+  return <img src={props.image} />;
+};
 
 // Otra forma
 type Props = {
-  image: string
-}
+  image: string;
+};
 
-export const RandomFox: JSX.Element = (
-  props: Props
-) => {
-  return (
-    <img src={props.image}/>
-  )
-}
+export const RandomFox: JSX.Element = (props: Props) => {
+  return <img src={props.image} />;
+};
 
 // Otra forma
 type Props = {
-  image: string
-}
+  image: string;
+};
 
-export const RandomFox = ({image}: Props): JSX.Element => {
-  return (
-    <img src={props.image}/>
-  )
-}
+export const RandomFox = ({ image }: Props): JSX.Element => {
+  return <img src={props.image} />;
+};
 ```
 
 ## State con tipos primitivos
+
 Podemos tipar el estado de un componente de la siguiente manera:
 
 ```tsx
-const [state, setState] = useState<string[]>([])
+const [state, setState] = useState<string[]>([]);
 ```
 
 ```tsx
-import { useState } from 'react'
+import { useState } from "react";
 
 type State = {
-  count: number
-}
+  count: number;
+};
 
 export const Counter = () => {
   const [state, setState] = useState<State>({
-    count: 0
-  })
+    count: 0,
+  });
 
   const handleClick = () => {
     setState({
-      count: state.count + 1
-    })
-  }
+      count: state.count + 1,
+    });
+  };
 
   return (
     <div>
       <h1>Counter: {state.count}</h1>
       <button onClick={handleClick}>Increment</button>
     </div>
-  )
-}
+  );
+};
 ```
 
 o bien, si quieres guardar un arreglo de objetos, puedes hacerlo de la siguiente manera:
 
 ```tsx
-import { useState } from 'react'
+import { useState } from "react";
 
 type State = {
   products: Array<{
-    id: number,
-    title: string,
-    price: number
-  }>
-}
+    id: number;
+    title: string;
+    price: number;
+  }>;
+};
 
 // Otra forma
 // type state = {
@@ -4684,16 +4721,16 @@ export const Counter = () => {
     products: [
       {
         id: 1,
-        title: 'Producto 1',
-        price: 100
+        title: "Producto 1",
+        price: 100,
       },
       {
         id: 2,
-        title: 'Producto 2',
-        price: 200
-      }
-    ]
-  })
+        title: "Producto 2",
+        price: 200,
+      },
+    ],
+  });
 
   const handleClick = () => {
     setState({
@@ -4701,29 +4738,29 @@ export const Counter = () => {
         ...state.products,
         {
           id: 3,
-          title: 'Producto 3',
-          price: 300
-        }
-      ]
-    })
-  }
+          title: "Producto 3",
+          price: 300,
+        },
+      ],
+    });
+  };
 
   return (
     <div>
       <h1>Counter: {state.count}</h1>
       <button onClick={handleClick}>Increment</button>
     </div>
-  )
-}
+  );
+};
 ```
 
 ## Tipos para eventos y callback de escuchadores
+
 A medida que desarrollamos aplicaciones en TypeScript, una de las tareas más importantes es asegurarnos de que estamos trabajando con tipos de datos precisos y seguros. Esto es particularmente importante cuando trabajamos con eventos y callbacks de escuchadores en React, ya que necesitamos especificar el tipo de evento que se está produciendo.
 
 Afortunadamente, muchas librerías y frameworks modernos ya proporcionan tipos de datos precisos y completos para eventos. Esto significa que podemos confiar en que las funciones que estamos utilizando son seguras y precisas.
 
 Para asegurarnos de que estamos utilizando los tipos de datos correctos para eventos, necesitamos asegurarnos de que nuestra configuración de TypeScript incluya las librerías que estamos utilizando. Podemos hacer esto especificando las librerías que estamos usando en nuestro archivo tsconfig.json.
-
 
 ```json
 {
@@ -4763,7 +4800,6 @@ En este ejemplo, la función addNewFox toma un argumento de tipo `React.MouseEve
 
 También, podemos hacer la importación de los tipos de manera directa:
 
-
 ```ts
 // importación del tipo desde React
 import type { MouseEvent } from "react"
@@ -4785,17 +4821,457 @@ function App(): JSX.Element {
 
 **Aun sin terminar**
 
+# React Native
 
+## Introduccion
 
+### Instalacion del CLI de React Native Expo
 
+[Documentacion](https://reactnative.dev/docs/environment-setup?guide=quickstart)
 
+### Instalacion de Android Studio para utilizar los emuladores
 
+[Documentacion](https://developer.android.com/studio?hl=es-419)
 
+Despues de intalar android studio en la pantalla inicial
 
+1. Configuraciones
+2. AVD Manager
+3. Create Virtual Device
+4. Phone
+5. Nexus 6
+6. Seleccionar sistema operativo android
+7. Descargar
+8. Terminar y luego darle click en el boton de play (Ya puedes cerrar android studio y dejar abierto solo la pantalla del emulador)
 
+Puedes cargar la aplicacion en el emulador con el siguiente comando:
 
+```bash
+npm run android
+```
+
+### Pruebas en un dispositivo fisico
+
+1. Descargar aplicacion Expo Go en el celular
+2. Correr el siguiente comando
+
+```bash
+npm start
+```
+
+3. Escanear el codigo QR que aparece en la terminal
+4. Listo
+
+## Estructura de un proyecto
+
+1. El archivo app.json es el archivo de configuracion de la aplicacion. En el puedes configurar el nombre de la aplicacion, el icono, el color de fondo, la orientacion y otras cosas
+2. App.js es el archivo principal de la aplicacion. En el se encuentra el componente principal de la aplicacion
+3. React Navie utiliza una estructura un poco diferente a React. Por ejemplo, en reacty html puede colocar un parrafo con la etiqueta `<p>` pero en react native no existe esa etiqueta. En su lugar, se utiliza el componente `<Text>` para mostrar texto en pantalla.
+4. La funcion StyleSheet.create() nos permite crear estilos para nuestros componentes. Esta funcion recibe un objeto con los estilos que queremos aplicar a nuestro componente. Por ejemplo:
+
+```jsx
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+```
+
+## Creacion de componentes
+
+Debes crear una carpeta llamada src y dentro de ella crear una carpeta llamada components. Dentro de esta carpeta puedes crear todos los componentes que quieras. La estructura de un componente es la siguiente:
+
+```jsx
+import React from "react";
+import { TextInput, Button, Text } from "react-native";
+
+const Component = () => {
+  return (
+    <View>
+      <Text>Component</Text>
+      <TextInput placeholder="email" />
+      <TextInput placeholder="contrasena" />
+      <Button title="Enviar" onPress={()=>console.log('Enviado')}>
+    </View>
+  );
+};
+
+export default Component;
+```
+
+Puedes importar componentes de la siguiente manera:
+
+```jsx
+import React from "react";
+import { TextInput, Button, Text } from "react-native";
+import Component from "./components/Component";
+
+const App = () => {
+  return (
+    <>
+      <Component />
+    </>
+  );
+};
+
+export default App;
+```
+
+## Propiedades entre componentes
+
+```jsx
+import React from "react";
+import { Text } from "react-native";
+
+export default function Saludar(props) {
+  const { name } = props;
+
+  return <Text>Hola {name}</Text>;
+}
+```
+
+```jsx
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Saludar from "./src/components/Saludar";
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text>Curso React Native</Text>
+      <Saludar name="Agustin Navarro Galdon" />
+      <Saludar name="Carlos Navarro" />
+      <Saludar name="Andres Navarro" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+```
+
+### Propiedades por defecto
+
+```jsx
+import { Text } from "react-native";
+
+const Saludar = ({ name = "default name" }) => {
+  return <Text> Hola {name}</Text>;
+};
+
+export default Saludar;
+```
+
+### Prop Types
+
+```js
+import React from "react";
+import { Text } from "react-native";
+import PropTypes from "prop-types";
+
+export default function Saludar(props) {
+  //   const { firstname = "Agustin", lastname = "Navarro Galdon" } = props;
+  const { firstname, lastname } = props;
+
+  return (
+    <Text>
+      Hola {firstname} {lastname}
+    </Text>
+  );
+}
+
+// Saludar.defaultProps = {
+//   firstname: "Agustin",
+//   lastname: "Navarro Galdon",
+// };
+
+Saludar.propTypes = {
+  firstname: PropTypes.string.isRequired,
+  lastname: PropTypes.string.isRequired,
+};
+```
+
+## Instalando y configurando React Navigation
+
+[Documentacion](https://reactnavigation.org/docs/getting-started)
+
+**Instalar Stacks**
+[Documentacion](https://reactnavigation.org/docs/hello-react-navigation)
+
+[Drawer Navigation](https://reactnavigation.org/docs/drawer-based-navigation)
+
+[Tab Navigation](https://reactnavigation.org/docs/tab-based-navigation)
+
+Debemos encerrar nuestra aplicacion en el componente NavigationContainer
+
+```jsx
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+
+export default function App() {
+  return (
+    <NavigationContainer>{/* Rest of your app code */}</NavigationContainer>
+  );
+}
+```
+
+### Stack de navegacion
+
+En src, crea la carpeta screens y dentro de ella crea el archivo HomeScreen.jsx
+
+```jsx
+import React from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
+
+const HomeScreen = (props) => {
+  const { navigation } = props;
+
+  const goToPage = () => {
+    navigation.navigate("Settings");
+  };
+
+  return (
+    <View>
+      <Text>Home Screen</Text>
+      <Button title="Ir a Settings" onPress={goToPage} />
+    </View>
+  );
+};
+
+export default HomeScreen;
+```
+
+Crear SettingsScreen.jsx
+
+```jsx
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+
+const SettingsScreen = () => {
+  return (
+    <View>
+      <Text>Settings Screen</Text>
+    </View>
+  );
+};
+
+export default SettingsScreen;
+```
+
+En src crear carpeta navigation y dentro de ella crear el archivo StackNavigation.jsx
+
+```jsx
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeScreen from "../screens/HomeScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+
+const Stack = createStackNavigator();
+
+const StackNavigation = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export default StackNavigation;
+```
+
+En App.js
+
+```jsx
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigation from "./src/navigation/StackNavigation";
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <StackNavigation />
+    </NavigationContainer>
+  );
+}
+```
+
+### Tab Navigation y SafeAreaView
+
+En navigation crear el archivo TabNavigation.js
+
+```js
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from "../screens/HomeScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+
+const Tab = createBottomTabNavigator();
+
+const TabNavigation = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
+  );
+};
+
+export default TabNavigation;
+```
+
+En HomeScreen.jsx
+
+```jsx
+....
+import { View, Text, Button, SafeAreaView } from "react-native";
+
+const HomeScreen = (props) => {
+  const { navigation } = props;
+
+  const goToPage = () => {
+    navigation.navigate("Settings");
+  };
+
+  return (
+    <SafeAreaView>
+        <Text>Home Screen</Text>
+        <Button title="Ir a Settings" onPress={goToPage} />
+    </SafeAreaView>
+  );
+};
+
+export default HomeScreen;
+```
+
+En App.js
+
+```jsx
+....
+import TabNavigation from "./src/navigation/TabNavigation";
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <TabNavigation />
+    </NavigationContainer>
+  );
+}
+```
+
+### Drawer Navigation
+
+En navigation crear el archivo DrawerNavigation.js
+
+```js
+import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import HomeScreen from "../screens/HomeScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+
+const Drawer = createDrawerNavigator();
+
+const DrawerNavigation = () => {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Settings" component={SettingsScreen} />
+    </Drawer.Navigator>
+  );
+};
+
+export default DrawerNavigation;
+```
+
+En App.js
+
+```jsx
+....
+import DrawerNavigation from "./src/navigation/DrawerNavigation";
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <DrawerNavigation />
+    </NavigationContainer>
+  );
+}
+```
+
+## Proyecto de Modulo
+
+```bash
+expo init pokedex
+```
+
+### Configuracion de React Navigation
+
+1. Instalar y configurar React Navigation
+2. En este caso, vamos a utilizar un boton tab con iconos, por lo tanto debemos instalar la libreria de iconos
+
+```bash
+npm install react-native-vector-icons/Ionicons
+```
+
+[Documentacion](https://platzi.com/new-home/clases/2557-react-native-listas-apis/42913-configuracion-de-react-navigation/)
+
+3. en src/navigation crear el archivo TabNavigation.js
+
+```js
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FavoritesScreen from "../screens/FavoritesScreen";
+import PokedexScreen from "../screens/PokedexScreen";
+import AccountScreen from "../screens/AccountScreen";
+
+import { Ionicons } from "@expo/vector-icons";
+
+const Tab = createBottomTabNavigator();
+
+const TabNavigation = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Favorites" component={Favorites} />
+      <Tab.Screen name="Pokedex" component={Pokedex} />
+      <Tab.Screen name="Account" component={Account} />
+    </Tab.Navigator>
+  );
+};
+
+export default TabNavigation;
+```
+
+En screens, crear archivo AccountScreen, PokedexScreen, FavoritesScreen con la estructura basica de un componente
+
+```jsx
+import React from "react";
+import { SafeAreaView, Text } from "react-native";
+
+const AccountScreen = () => {
+  return (
+    <SafeAreaView>
+      <Text>AccountScreen</Text>
+    </SafeAreaView>
+  );
+};
+
+export default AccountScreen;
+```
+
+[Posible error](https://platzi.com/comentario/3056174/)
 
 ## Enlaces de interes
+
 1. [Google Fonts](https://fonts.google.com/)
 2. [Repositorio Aplicacion ToDos](https://github.com/platzi/curso-react-intro)
 3. [Figma Aplicacion ToDos](https://www.figma.com/file/3aZkIjXMEzBDACmWxqUVes/TODO-Machine-Mockup?node-id=0%3A1&mode=dev)
